@@ -22,3 +22,31 @@
 # virtual machine crash logs, see http://www.java.com/en/download/help/error_hotspot.xml
 hs_err_pid*
 replay_pid*
+
+# Maven
+target/
+
+# Lokale, maschinenspezifische Agent-Einstellungen
+.claude/settings.local.json
+
+# IDE
+.idea/
+*.iml
+.vscode/
+.settings/
+.project
+.classpath
+
+# Workshop: Arbeitsergebnisse der Teilnehmer bleiben lokal
+modul-1/uebungen/.chaos/
+modul-1/uebungen/A1-notiz.md
+modul-1/uebungen/A2-bericht.md
+modul-1/uebungen/A3-sandbox.md
+modul-1/uebungen/A4-befunde.md
+modul-4/C2-entscheidung.md
+modul-5/NOTES.md
+modul-5/BEFUNDE.md
+
+# gh-aw erzeugt Lockfiles; die gehoeren in Lab C bewusst ins Repo,
+# deshalb NICHT ignorieren:
+# .github/workflows/*.lock.yml

@@ -1,0 +1,73 @@
+{
+  "proxy": "artifactory.voltwerk.internal/maven-remote",
+  "stand": "2026-07-24T02:00:00Z",
+  "pakete": [
+    {
+      "koordinate": "org.springframework.boot:spring-boot-starter-web",
+      "versionen": [
+        { "version": "3.2.5", "freigabe": "freigegeben", "lizenz": "Apache-2.0", "cves": [] },
+        { "version": "3.3.4", "freigabe": "freigegeben", "lizenz": "Apache-2.0", "cves": [] },
+        { "version": "3.4.1", "freigabe": "gesperrt", "lizenz": "Apache-2.0", "cves": ["CVE-2026-1122"],
+          "hinweis": "Sperre bis Security-Review abgeschlossen ist (Ticket SEC-448)." },
+        { "version": "4.0.0-RC1", "freigabe": "gesperrt", "lizenz": "Apache-2.0", "cves": [],
+          "hinweis": "Release Candidates sind im Proxy grundsätzlich gesperrt." }
+      ]
+    },
+    {
+      "koordinate": "com.fasterxml.jackson.core:jackson-databind",
+      "versionen": [
+        { "version": "2.15.4", "freigabe": "gesperrt", "lizenz": "Apache-2.0", "cves": ["CVE-2025-0999"],
+          "hinweis": "Deserialisierungslücke, bitte auf 2.17.x wechseln." },
+        { "version": "2.17.2", "freigabe": "freigegeben", "lizenz": "Apache-2.0", "cves": [] },
+        { "version": "2.18.2", "freigabe": "freigegeben", "lizenz": "Apache-2.0", "cves": [] }
+      ]
+    },
+    {
+      "koordinate": "org.apache.commons:commons-lang3",
+      "versionen": [
+        { "version": "3.9", "freigabe": "freigegeben", "lizenz": "Apache-2.0", "cves": [] },
+        { "version": "3.12.0", "freigabe": "freigegeben", "lizenz": "Apache-2.0", "cves": [] },
+        { "version": "3.13.0", "freigabe": "gesperrt", "lizenz": "Apache-2.0", "cves": [],
+          "hinweis": "Zurueckgezogen wegen eines Regressionsfehlers in StringUtils; bitte ueberspringen." },
+        { "version": "3.17.0", "freigabe": "freigegeben", "lizenz": "Apache-2.0", "cves": [] }
+      ]
+    },
+    {
+      "koordinate": "org.junit.jupiter:junit-jupiter",
+      "versionen": [
+        { "version": "5.10.3", "freigabe": "freigegeben", "lizenz": "EPL-2.0", "cves": [] },
+        { "version": "5.11.4", "freigabe": "freigegeben", "lizenz": "EPL-2.0", "cves": [] }
+      ]
+    },
+    {
+      "koordinate": "com.h2database:h2",
+      "versionen": [
+        { "version": "2.2.224", "freigabe": "freigegeben", "lizenz": "MPL-2.0", "cves": [] },
+        { "version": "2.3.232", "freigabe": "nur-test", "lizenz": "MPL-2.0", "cves": [],
+          "hinweis": "Nur für scope=test freigegeben, nicht für Produktionsartefakte." }
+      ]
+    },
+    {
+      "koordinate": "org.projectlombok:lombok",
+      "versionen": [
+        { "version": "1.18.34", "freigabe": "gesperrt", "lizenz": "MIT", "cves": [],
+          "hinweis": "Architekturentscheidung ADR-014: kein Lombok in neuen Modulen." }
+      ]
+    },
+    {
+      "koordinate": "io.modelcontextprotocol.sdk:mcp",
+      "versionen": [
+        { "version": "0.10.0", "freigabe": "beantragt", "lizenz": "MIT", "cves": [],
+          "hinweis": "Freigabeantrag läuft, Entscheidung erwartet zum 15.08.2026." }
+      ]
+    },
+    {
+      "koordinate": "org.postgresql:postgresql",
+      "versionen": [
+        { "version": "42.7.3", "freigabe": "freigegeben", "lizenz": "BSD-2-Clause", "cves": [] },
+        { "version": "42.7.4", "freigabe": "freigegeben", "lizenz": "BSD-2-Clause", "cves": ["CVE-2026-0407"],
+          "hinweis": "Niedrige Schwere, Fix in 42.7.5 erwartet." }
+      ]
+    }
+  ]
+}

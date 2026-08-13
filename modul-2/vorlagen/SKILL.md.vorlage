@@ -1,0 +1,77 @@
+---
+# PFLICHT. KLEINGESCHRIEBEN, nur Buchstaben, Ziffern und Bindestriche. Max. 64 Zeichen.
+# Muss dem Verzeichnisnamen entsprechen.
+# Grossbuchstaben laedt die CLI klaglos -- `gh skill publish` lehnt sie ab.
+name: commit-botschafter
+
+# PFLICHT. Max. 1024 Zeichen. Das ist der EINZIGE Text, den das Modell bei der
+# Auswahl sieht -- der Rumpf unten wird erst danach geladen.
+#
+# Muster:  <Was der Skill tut>. Use when <Phrasen, die Nutzer wirklich tippen>.
+#          Do not use for <Abgrenzung>.
+#
+# In einfache Anfuehrungszeichen setzen, sobald Doppelpunkte oder Kommas vorkommen.
+description: 'TODO'
+
+# OPTIONAL. Kommaseparierter String ODER YAML-Array von Strings.
+allowed-tools: read, search
+
+# OPTIONAL. Standard true. Auf false setzen, wenn der Skill nur automatisch
+# und nicht ueber den Slash-Picker ausgeloest werden soll.
+# user-invocable: true
+---
+
+# Commit-Botschafter
+
+<!--
+  Ab hier ist alles freies Markdown. Diese Zeilen kosten Tokens, sobald der Skill
+  greift -- und zwar bei JEDEM Greifen. Haltet die Datei unter 500 Zeilen.
+
+  Was hier hineingehoert:
+    - Eine Schritt-fuer-Schritt-Anleitung, kein Essay.
+    - Konkrete Beispiele. Modelle lernen aus Beispielen besser als aus Regeln.
+    - Die Grenzen: "Das tue ich nicht."
+
+  Was NICHT hineingehoert:
+    - Wissen, das schon in AGENTS.md steht. Verweist darauf.
+    - Lange Tabellen. Die gehoeren nach references/ und werden bei Bedarf gelesen.
+-->
+
+## Wann ich greife
+
+TODO
+
+## Ablauf
+
+1. TODO — was liest du zuerst? (Tipp: `git diff --staged`)
+2. TODO
+3. TODO
+
+## Format
+
+TODO — der exakte Aufbau. Zeigt ihn als Codeblock, nicht als Prosa.
+
+## Beispiele
+
+**Gut**
+
+```
+TODO
+```
+
+**Schlecht**
+
+```
+TODO
+```
+Begründung: TODO
+
+## Das tue ich nicht
+
+- TODO
+- TODO
+
+## Referenzen
+
+Die vollständigen Konventionen stehen in `docs/commit-konventionen.md`.
+Lies sie, wenn ein Fall nicht durch die Beispiele oben abgedeckt ist.

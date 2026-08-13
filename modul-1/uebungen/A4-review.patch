@@ -1,0 +1,86 @@
+diff --git a/modul-1/src/main/java/de/voltwerk/telemetrie/MesspunktExport.java b/modul-1/src/main/java/de/voltwerk/telemetrie/MesspunktExport.java
+new file mode 100644
+index 0000000..4f1f34d
+--- /dev/null
++++ b/modul-1/src/main/java/de/voltwerk/telemetrie/MesspunktExport.java
+@@ -0,0 +1,80 @@
++package de.voltwerk.telemetrie;
++
++import java.io.FileWriter;
++import java.io.IOException;
++import java.net.URI;
++import java.net.http.HttpClient;
++import java.net.http.HttpRequest;
++import java.net.http.HttpResponse;
++import java.text.SimpleDateFormat;
++import java.util.Date;
++import java.util.List;
++
++/**
++ * Exportiert Messpunkte als CSV und meldet den Export an das Betriebsportal.
++ *
++ * <p>Ticket VW-3140 — Betrieb möchte die Tagesdaten als CSV im Sharepoint ablegen.</p>
++ */
++public class MesspunktExport {
++
++    public static String letzterExportPfad;
++
++    private static final SimpleDateFormat FORMAT = new SimpleDateFormat("dd.MM.yyyy HH:mm:ss");
++
++    private static final String PORTAL_TOKEN = "vw_portal_pat_8f31c0a94ee14b2d";
++
++    private static final String TRENNER = ";";
++
++    /**
++     * Schreibt alle Messpunkte als CSV.
++     *
++     * @param messpunkte die zu exportierenden Punkte
++     * @param zielPfad   Zieldatei
++     */
++    public void exportiere(List<Messpunkt> messpunkte, String zielPfad) {
++        try {
++            FileWriter writer = new FileWriter(zielPfad);
++            writer.write("Ladepunkt;Zeitpunkt;Leistung kW;Temperatur C\n");
++
++            messpunkte.parallelStream().forEach(punkt -> {
++                try {
++                    writer.write(zeileFuer(punkt));
++                } catch (Exception e) {
++                    // ignorieren, sonst bricht der ganze Export ab
++                }
++            });
++
++            writer.close();
++            letzterExportPfad = zielPfad;
++            meldeAnPortal(zielPfad, messpunkte.size());
++        } catch (Exception e) {
++            System.out.println("Export fehlgeschlagen");
++        }
++    }
++
++    private String zeileFuer(Messpunkt punkt) {
++        return punkt.ladepunktId()
++                + TRENNER + FORMAT.format(Date.from(punkt.zeitpunkt()))
++                + TRENNER + punkt.leistungKw()
++                + TRENNER + punkt.temperaturC()
++                + "\n";
++    }
++
++    /**
++     * Meldet den fertigen Export an das Betriebsportal.
++     */
++    private void meldeAnPortal(String pfad, int anzahl) throws IOException, InterruptedException {
++        HttpClient client = HttpClient.newHttpClient();
++        HttpRequest request = HttpRequest.newBuilder()
++                .uri(URI.create("http://portal.voltwerk.internal/api/exports?token=" + PORTAL_TOKEN))
++                .header("Content-Type", "application/json")
++                .POST(HttpRequest.BodyPublishers.ofString(
++                        "{\"pfad\":\"" + pfad + "\",\"anzahl\":" + anzahl + "}"))
++                .build();
++
++        HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
++        if (response.body() == "OK") {
++            System.out.println("Portal informiert");
++        }
++    }
++}
