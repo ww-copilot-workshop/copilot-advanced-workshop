@@ -1,6 +1,12 @@
 # Modul 2 — Lab B: Copilot beibringen, wie ihr arbeitet
 
-**Zeit:** ca. 35 Minuten · **Sozialform:** Zweierteams · **Ort:** Aufgaben hier, Ausführung in der Repo-Wurzel
+**Zeit:** 35 Minuten angesetzt · **Sozialform:** Zweierteams · **Ort:** Aufgaben hier, Ausführung in der Repo-Wurzel
+
+> **Zur Zeit, ehrlich:** Durchgespielt braucht das Lab eher **70 Minuten**, allein B3.2
+> (zwei eigene Werkzeuge) 25 bis 35. In 35 Minuten macht ihr **B1 und B3.1** — Skill
+> schreiben, Server einbinden, eine Frage beantworten lassen. B2 und B3.2 sind Kür.
+> **B3.0 (erst schauen, dann bauen) überspringt ihr nicht** — die zwei Minuten sind die
+> beste Investition des Moduls.
 
 > **MCP verbindet Werkzeuge. Skills verpacken Wissen. Custom Agents definieren Rollen.**
 > Drei verschiedene Dinge, drei verschiedene Dateien. Wer sie verwechselt, baut den
@@ -278,7 +284,8 @@ In `WerkstattMcpServer.java` sind drei Werkzeuge registriert. Eines ist fertig u
 dient als Vorlage. Zwei sind eure Aufgabe:
 
 * **`freigabe_pruefen`** (Pflicht) — „Darf ich Paket X in Version Y benutzen?"
-  Klare Antwort mit Begründung; bei Nein die nächstbeste erlaubte Version vorschlagen.
+  Klare Antwort mit Begründung; bei Nein die **höchste freigegebene** Version
+  vorschlagen (nicht die nächstniedrigere).
 * **`risiko_report`** (Kür) — alles, was Aufmerksamkeit braucht, auf einen Blick.
 
 Lasst die CLI das bauen. Ihr schreibt die **Beschreibungen** selbst — das ist der Teil,
@@ -287,11 +294,18 @@ gemeint ist.
 
 Neu bauen, dann `/mcp` — der Server wird neu gestartet und meldet die neuen Werkzeuge.
 
-**Fertig, wenn** beide Fragen korrekt beantwortet werden:
+**Fertig, wenn** beide Fragen korrekt beantwortet werden — und zwar **so gestellt, wie
+ein Kollege sie stellen würde**, also ohne groupId:
 
 ```
 Darf ich spring-boot-starter-web 3.4.1 einsetzen? Wenn nein, was stattdessen?
 ```
+
+> Damit das funktioniert, muss euer Werkzeug mit einer **unvollständigen Koordinate**
+> umgehen können. `PaketIndex` bietet dafür `suche(teil)` neben `finde(koordinate)` —
+> das fertige Werkzeug `paket_versionen` zeigt das Muster. Wer nur `finde()` benutzt,
+> baut ein Werkzeug, das an genau dieser Frage scheitert. Auch das ist eine Lektion:
+> **Die Eingabe kommt von einem Modell, nicht von einem Formular.**
 
 Antwort: nein, gesperrt wegen CVE-2026-1122 und laufendem Security-Review;
 Alternative **3.3.4**.

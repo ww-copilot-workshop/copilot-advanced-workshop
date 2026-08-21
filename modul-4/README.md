@@ -1,6 +1,11 @@
 # Modul 4 — Lab C: Delegieren und automatisieren
 
-**Zeit:** ca. 60 Minuten · **Sozialform:** Zweierteams
+**Zeit:** 60 Minuten angesetzt · **Sozialform:** Zweierteams
+
+> **Zur Zeit, ehrlich:** Durchgespielt sind es eher **90 Minuten**. C1 allein braucht
+> 30, wenn die Reparatur der schlechten Karte ernst gemeint ist. Plant so:
+> **C1 delegieren, dann C3 bauen, während der Agent arbeitet** — die Wartezeit ist
+> eingeplant, nicht verloren. C2 macht ihr, wenn der PR da ist. C4 ist Kür.
 
 > Der Agent ist ein Gast, der sich an eure Hausordnung hält.
 > Heute schreibt ihr die Hausordnung — und schaut nach, ob er sich daran gehalten hat.
@@ -161,6 +166,15 @@ gh aw --version
 gh aw init --engine copilot           # einmal pro Repo
 ```
 
+> ⚠️ **`gh aw init` legt eine eigene `.github/workflows/copilot-setup-steps.yml` an** —
+> für seine eigenen Zwecke. Wenn ihr die Vorlage aus `modul-4/` dorthin kopiert,
+> überschreibt ihr sie (oder sie eure), und niemand warnt euch.
+>
+> Reihenfolge, die funktioniert: **erst `gh aw init`, dann hineinschauen.** Wenn dort
+> schon eine Datei liegt, führt eure Setup-Steps-Aufgabe an einem anderen Dateinamen
+> durch und vergleicht am Ende. Im echten Repo müsst ihr die beiden von Hand
+> zusammenführen — auch das ist eine realistische Erfahrung.
+
 **Ablauf**
 
 ```bash
@@ -210,8 +224,13 @@ sie im Diff eingeklappt ist — aber **versioniert** bleibt.
 gh aw trial ./.github/workflows/doku-drift.md --clone-repo <org>/<repo> --delete-host-repo-after
 ```
 
-Trial-Modus läuft gegen ein simuliertes Repository. Keine echten Issues, keine echten PRs.
-**Das ist der richtige Weg für den ersten Lauf** — im Workshop und bei euch daheim.
+Trial-Modus läuft gegen ein **simuliertes** Repository: keine echten Issues, keine
+echten PRs im Zielrepo. **Das ist der richtige Weg für den ersten Lauf.**
+
+> Präzisierung, damit niemand überrascht wird: `gh aw trial` legt dafür ein
+> **temporäres privates Repository in eurem GitHub-Konto** an. Es ist also nicht
+> „nichts passiert", sondern „nichts passiert *dort, wo es weh tut*".
+> `--delete-host-repo-after` räumt es wieder weg — benutzt das Flag.
 
 **Wenn ihr scharf schalten wollt**
 
@@ -225,8 +244,28 @@ gh aw logs doku-drift
 gh aw audit <run-id> --parse
 ```
 
-**Fertig, wenn** `gh aw compile` **null Warnungen** meldet und ihr erklären könnt, warum
-euer Workflow genau die Permissions hat, die er hat.
+**Fertig, wenn** `gh aw compile` **null Warnungen** meldet, ihr erklären könnt, warum
+euer Workflow genau die Permissions hat, die er hat — **und die Prüfliste unten
+abgehakt ist.**
+
+> ⚠️ **Der Compiler allein reicht als Abnahme nicht.** Wir haben es nachgemessen:
+> **`ci-triage.md` kompiliert mit ALLEN sechs offenen TODOs fehlerfrei und ohne
+> Warnung.** Wer nur auf „0 warnings" schaut, hält eine unfertige Datei für fertig.
+>
+> Das ist kein Fehler der Vorlage, sondern die Lektion: **Ein Compiler prüft Form,
+> kein Verständnis.** Genau deshalb gibt es Reviews.
+>
+> Prüfliste je Vorlage — geht sie zu zweit durch:
+>
+> * `doku-drift.md` — Zeitplan gesetzt? Manueller Auslöser da? Permissions für **alle**
+>   Toolsets? `bash` mit **echter Liste** (nicht `true`)? `max` beim Issue?
+> * `testluecken-report.md` — `java` im Netz-Allowlist? `edit`-Tool da? Draft-PR?
+>   `if-no-changes` gesetzt?
+> * `ci-triage.md` — `roles` **unter `on:`**? `actions: read` **und** Toolset `actions`?
+>   `target` beim Kommentar? `max: 1`?
+>
+> Und die zwei, die sauber durchkompilieren und trotzdem falsch sind:
+> **`bash: [":*"]`** und **`add-comment` ohne `target`**.
 
 > Eine Zeile bleibt trotzdem stehen: der `info:`-Hinweis zu
 > `permissions.copilot-requests: write`. Das ist eine **Info**, keine Warnung, und
@@ -237,15 +276,14 @@ euer Workflow genau die Permissions hat, die er hat.
 > je Datei eine interne Meldung („Schema validation available but skipped") als Warnung
 > mit. Ihr hättet die Aufgabe gelöst und würdet es nicht merken.
 
-**Und der unbequeme Teil, den ihr nicht übersehen dürft:** Zwei sicherheitsrelevante
-Falschlösungen kompilieren **fehlerfrei und ohne Warnung** —
-
-* `bash: [":*"]` (der Agent darf jedes Shell-Kommando ausführen)
-* `add-comment` ohne `target` (der Kommentar kann irgendwo landen)
-
 **Der Compiler ist kein Policy-Werkzeug.** Er prüft Syntax und Permissions-Konsistenz,
 nicht eure Absicht. „Kompiliert sauber" heißt nicht „ist in Ordnung". Genau dafür gibt
 es das Review — bei Workflows genauso wie bei Code.
+
+> Noch zwei Beobachtungen aus dem Testlauf, damit ihr nicht rätselt:
+> Der Compiler meldet **pro Datei nur einen Fehler je Lauf** — nach dem Fix kann also
+> sofort der nächste auftauchen. Und die `i →`-Zeile unter einer Fehlermeldung ist
+> gelegentlich unpassend; **verlasst euch auf die erste Zeile**, nicht auf den Nachsatz.
 
 ### Die fünf Fallstricke, die euch garantiert treffen
 

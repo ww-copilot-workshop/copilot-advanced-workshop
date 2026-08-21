@@ -1,6 +1,13 @@
 # Modul 5 — Lab D: Der geführte Legacy-Sprint
 
-**Zeit:** ca. 45 Minuten · **Sozialform:** Zweierteams
+**Zeit:** 45 Minuten angesetzt · **Sozialform:** Zweierteams
+
+> **Zur Zeit, ehrlich:** Wir haben den Sprint durchgespielt. **D2 allein braucht 35 bis
+> 55 Minuten**, nicht 15 — der teure Teil ist nicht das Schreiben der Tests, sondern das
+> Einordnen der roten. Und genau das ist der Punkt der Übung.
+>
+> **Empfehlung: D1 kurz, D2 in voller Länge, D3 wenn Zeit ist. D4 macht ihr gemeinsam
+> im Plenum.** Wer D2 hetzt, um D4 zu schaffen, hat den Tag falsch herum priorisiert.
 
 > **Verstehen → Absichern → Verändern → Verifizieren.** Immer im Kreis, immer in
 > dieser Reihenfolge. Wer bei Schritt 3 anfängt, zementiert Fehler nur schneller.
@@ -246,8 +253,26 @@ benannt hat. Konventionen und Beispielcode im Repo wirken als Few-Shot. Das Revi
 Genau deshalb ist `AGENTS.md` die wichtigste Datei in eurem Repo — wichtiger als jeder
 Prompt, den ihr euch merkt.
 
-**Fertig, wenn** `mvn -q -pl modul-5 -am test` **genau dieselben** Tests grün und rot
+**Fertig, wenn** `mvn -pl modul-5 -am test` **genau dieselben** Tests grün und rot
 zeigt wie vor dem Umbau. Ein Refactoring, das die Befundlage ändert, war keins.
+
+Belegt es, statt es zu behaupten:
+
+```bash
+mvn -pl modul-5 -am test 2>&1 | grep -E '^\[(ERROR|INFO)\] +[A-Za-z].*(:|Tests run)' | sort > /tmp/vorher.txt
+# ... umbauen ...
+mvn -pl modul-5 -am test 2>&1 | grep -E '^\[(ERROR|INFO)\] +[A-Za-z].*(:|Tests run)' | sort > /tmp/nachher.txt
+diff /tmp/vorher.txt /tmp/nachher.txt && echo "IDENTISCH"
+```
+
+> ⚠️ **Das funktioniert nur, wenn ihr D2 gemacht habt.** Ohne die Soll-Tests besteht die
+> Suite aus einem einzigen Alttest (BASIS-Tarif, 50 kW) — die Zweige `FLOTTE` und `NACHT`
+> deckt **kein** Test ab. Wir haben es geprüft: Setzt man den FLOTTE-Preis von 0,42 auf
+> 9,99 EUR/kWh, bleibt der Build grün.
+>
+> Ein „unverändertes Verhalten", das von niemandem geprüft wird, ist eine Behauptung.
+> Das ist dieselbe Lektion wie in D2 — nur schmerzhafter, weil sie diesmal euren
+> eigenen Umbau betrifft.
 
 ---
 

@@ -48,7 +48,7 @@ Diese Seite ist die **Rohquelle**. In Lab B1 verpackt ihr sie zu einem Skill.
 |---|---|---|
 | `feat` | neue fachliche Funktion | `feat(telemetrie): erkenne Überhitzungsverdacht` |
 | `fix` | Fehlerbehebung mit Ticketbezug | `fix(abrechnung): deckele Blockiergebühr bei 12 EUR` |
-| `refactor` | Umbau ohne Verhaltensänderung | `refactor(abrechnung): ersetze Tarif-Kaskade durch versiegelten Typ` |
+| `refactor` | Umbau ohne Verhaltensänderung | `refactor(telemetrie): ziehe Zeilenparsing aus dem Schleifenrumpf heraus` |
 | `test` | nur Tests | `test(abrechnung): ergänze Soll-Tests aus SPEC` |
 | `docs` | nur Dokumentation | `docs(abrechnung): halte Befunde zur Nachtlogik fest` |
 | `build` | Maven, Abhängigkeiten, CI | `build(deps): hebe jackson-databind auf 2.17.2` |
@@ -90,13 +90,12 @@ Spec: VW-SPEC-ABR §S-3
 ```
 
 ```
-refactor(abrechnung): ersetze Tarif-Kaskade durch versiegelten Typ
+refactor(telemetrie): ziehe Zeilenparsing aus dem Schleifenrumpf heraus
 
-Jeder neue Tarif hat bisher die Methode berechne() verlängert.
-Das Verhalten liegt jetzt am Tarif selbst; berechne() kennt nur
-noch den Vertrag.
+parse() war 40 Zeilen lang und mischte Einlesen, Validierung und
+Fehlerzählung. Die drei Anliegen stehen jetzt getrennt.
 
-Verhalten unverändert, Soll-Tests aus SPEC.md laufen wie vorher.
+Verhalten unverändert, die vorhandenen Tests laufen wie vorher.
 ```
 
 ### Schlecht
@@ -112,6 +111,6 @@ feat(abrechnung): AbrechnungsService.berechne() umgebaut und Rundung gefixt und 
 Drei Gedanken in einem Commit, Betreff zu lang, Vergangenheitsform.
 
 ```
-refactor(abrechnung): apply strategy pattern
+refactor(telemetrie): apply builder pattern
 ```
 Englisch, und der Mustername sagt nichts über die Wirkung.

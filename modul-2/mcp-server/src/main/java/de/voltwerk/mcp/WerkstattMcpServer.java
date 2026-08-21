@@ -139,10 +139,16 @@ public final class WerkstattMcpServer {
         @Override
         public String ausfuehren(Map<String, Object> argumente) throws WerkzeugFehler {
             // TODO(B3-a): Implementieren.
-            //  - Paket im Index suchen, sonst WerkzeugFehler mit hilfreichem Text.
+            //  - Paket im Index suchen. ACHTUNG: Das Modell gibt oft nur den artifactId
+            //    weiter ("spring-boot-starter-web"), nicht die volle Koordinate.
+            //    PaketIndex bietet dafür suche(teil) neben finde(koordinate);
+            //    paket_versionen oben zeigt das Muster. Wer nur finde() benutzt, baut
+            //    ein Werkzeug, das an der Abnahmefrage scheitert.
+            //  - Findest du gar nichts: WerkzeugFehler mit hilfreichem Text.
             //  - Version suchen, Freigabestatus auswerten.
             //  - Bei 'gesperrt' oder 'nur-test': Grund nennen und, wenn vorhanden,
-            //    die höchste freigegebene Version als Alternative vorschlagen.
+            //    die HÖCHSTE freigegebene Version als Alternative vorschlagen.
+            //    Semantisch vergleichen, nicht alphabetisch -- 3.17.0 ist höher als 3.9.
             throw new WerkzeugFehler("freigabe_pruefen ist noch nicht implementiert (Übung B3-a).");
         }
     }

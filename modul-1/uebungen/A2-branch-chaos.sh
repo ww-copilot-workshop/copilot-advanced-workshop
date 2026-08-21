@@ -55,10 +55,24 @@ anlegen() {
   # -f, weil .chaos/ absichtlich in .gitignore steht: die Dateien sollen nur
   # auf diesen Übungsbranches existieren, nicht im Arbeitsverzeichnis stören.
   git add -f "$datei"
+  # Datum staffeln: sonst liegen alle acht Commits in derselben Sekunde und
+  # die Aufgabe "absteigend nach Datum sortiert" waere bedeutungslos.
+  local tage=$((TAGE_ZURUECK))
+  TAGE_ZURUECK=$((TAGE_ZURUECK + 11))
+  local wann
+  wann="$(git log -1 --format=%cI "$AUSGANGS_BRANCH" 2>/dev/null || date +%Y-%m-%dT%H:%M:%S%z)"
+  wann="$(python3 -c "
+import sys, datetime
+d = datetime.datetime.fromisoformat(sys.argv[1])
+print((d - datetime.timedelta(days=int(sys.argv[2]))).isoformat())
+" "$wann" "$tage")"
+  GIT_AUTHOR_DATE="$wann" GIT_COMMITTER_DATE="$wann" \
   git -c user.name="Übungsdaten" -c user.email="uebung@voltwerk.invalid" \
       commit -q -m "$nachricht"
   git checkout -q "$AUSGANGS_BRANCH"
 }
+
+TAGE_ZURUECK=3
 
 echo "Lege Übungsbranches an ..."
 

@@ -14,7 +14,9 @@ name: commit-botschafter
 description: 'TODO'
 
 # OPTIONAL. Kommaseparierter String ODER YAML-Array von Strings.
-allowed-tools: read, search
+# Achtung: Der Ablauf unten liest `git diff --staged`. Ohne ein Shell-Tool
+# kann der Skill sein eigenes Kernkommando nicht ausfuehren.
+allowed-tools: read, search, shell
 
 # OPTIONAL. Standard true. Auf false setzen, wenn der Skill nur automatisch
 # und nicht ueber den Slash-Picker ausgeloest werden soll.

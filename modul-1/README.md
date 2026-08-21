@@ -1,6 +1,11 @@
 # Modul 1 — Übungsreihe A: Kontrolle beweisen
 
-**Zeit:** ca. 40 Minuten · **Sozialform:** Zweierteams · **Ort:** Aufgaben hier, Ausführung in der Repo-Wurzel
+**Zeit:** 40 Minuten angesetzt · **Sozialform:** Zweierteams · **Ort:** Aufgaben hier, Ausführung in der Repo-Wurzel
+
+> **Zur Zeit, ehrlich:** Wir haben die Reihe durchgespielt. Vollständig braucht sie eher
+> **80 Minuten**. In 40 Minuten schafft ihr **A2 und A4** — das sind die beiden, die
+> hängenbleiben. A1 und A3 sind Kür. Lasst euch nicht hetzen und macht lieber zwei
+> Übungen richtig als vier halb.
 
 > Thema des Moduls sind die drei Regler **Autonomie**, **Anbindung**, **Kosten**.
 > In dieser Reihe dreht ihr am Regler Autonomie — und beweist, dass ihr ihn kontrolliert.
@@ -138,8 +143,22 @@ Das ist die Übung, über die ihr abends noch redet.
 **Vorbereitung** (einmal pro Team, dauert 5 Sekunden):
 
 ```bash
+git status --porcelain     # muss LEER sein, sonst startet das Skript nicht
 bash modul-1/uebungen/A2-branch-chaos.sh
 ```
+
+> ⚠️ **Wenn ihr A1 gemacht habt, ist euer Arbeitsbaum schmutzig** und das Skript
+> verweigert den Start („Arbeitsverzeichnis ist nicht sauber"). Das ist Absicht — es soll
+> eure Arbeit nicht in seine Übungsbranches ziehen. Committet A1 vorher auf **eurem**
+> Branch:
+>
+> ```bash
+> git checkout -b uebung/<euer-name>     # falls noch nicht geschehen
+> git add -A && git commit -m "feat(telemetrie): implementiere LadepunktStatistik"
+> ```
+>
+> Das ist keine Schikane: Der Commit ist gleichzeitig euer erster Testfall für den
+> Commit-Botschafter aus Lab B.
 
 Das legt acht lokale Branches mit Präfix `chaos/` an. Aufräumen später mit
 `bash modul-1/uebungen/A2-branch-chaos.sh --aufraeumen`.
@@ -347,11 +366,17 @@ und denselben Auftrag noch einmal.
 gleich zu beheben. Er wird ablehnen. Das ist die `tools:`-Liste bei der Arbeit — und
 das ist der Unterschied zwischen einer Absprache und einer Regel.
 
-> Der Diff enthält **mindestens zehn** Befunde, drei davon mit Schweregrad Blocker.
-> Wer auf zehn kommt, bekommt vorne am Trainer-Tisch einen Keks. Wer mehr findet,
-> zwei.
+> Der Diff enthält **weit über zwanzig** belastbare Befunde, vier davon Blocker.
+> Wir haben nachgezählt. Ab **fünfzehn** gibt es vorne am Trainer-Tisch einen Keks.
+>
+> Realistisch braucht ein ehrlicher Zweierteam-Review beide Runden zusammen eher
+> **30 Minuten** als 10. Wenn die Zeit drängt: Runde 1 auf fünf Minuten deckeln und die
+> Kraft in Runde 2 stecken — der Vergleich ist der Punkt, nicht die Vollständigkeit.
 
 Aufräumen: `git apply -R modul-1/uebungen/A4-review.patch && git reset -q`
+
+> **Nicht committen**, solange der Patch angewendet ist — sonst schlägt `git apply -R`
+> fehl und ihr braucht `git checkout -- . && git reset -q` stattdessen.
 
 (Das `git reset` ist nötig, weil `git add -N` den Index anfasst und `git apply -R`
 nur den Arbeitsbaum zurücknimmt. Ohne den Reset bleibt das Repo unsauber — und das
