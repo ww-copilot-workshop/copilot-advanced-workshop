@@ -2,13 +2,32 @@
 
 **Zeit:** 60 Minuten angesetzt · **Sozialform:** Zweierteams
 
-> **Zur Zeit, ehrlich:** Durchgespielt sind es eher **90 Minuten**. C1 allein braucht
-> 30, wenn die Reparatur der schlechten Karte ernst gemeint ist. Plant so:
-> **C1 delegieren, dann C3 bauen, während der Agent arbeitet** — die Wartezeit ist
-> eingeplant, nicht verloren. C2 macht ihr, wenn der PR da ist. C4 ist Kür.
-
 > Der Agent ist ein Gast, der sich an eure Hausordnung hält.
 > Heute schreibt ihr die Hausordnung — und schaut nach, ob er sich daran gehalten hat.
+
+---
+
+## Vorab: dieses Lab läuft in zwei Varianten
+
+Ob ihr **selbst** in die Cloud delegieren könnt, hängt an eurer Organisation: Der Copilot
+Coding Agent muss für das Übungs-Repo freigeschaltet sein, und ihr braucht dort
+Schreibrechte. Das klärt euer Trainer am Morgen — es ist keine Frage eures Könnens.
+
+| | **Variante Demo** (Standard) | **Variante Vollgas** |
+|---|---|---|
+| C1 Karten bewerten | ihr, am Rechner | ihr, am Rechner |
+| Delegation auslösen | **Trainer, vorne** | ihr, selbst |
+| C2 Review am Gate | ihr, am echten PR im Browser | ihr, an eurem eigenen PR |
+| C3 Workflow bauen | ihr, lokal | ihr, lokal |
+| C4 Portfolio | entfällt | Kür |
+
+**Der Lerninhalt ist in beiden Varianten derselbe.** Das Auslösen dauert dreißig
+Sekunden und ist der langweiligste Teil des Moduls. Interessant sind das Ticket davor
+und das Gate danach — und beides macht ihr in jedem Fall selbst.
+
+> **Zur Zeit, ehrlich:** Angesetzt sind 60 Minuten, durchgespielt sind es eher 90.
+> Plant so: **C1, dann C3** — die Wartezeit auf den Agenten fällt in C3 hinein und ist
+> dadurch nicht verloren. C2 macht ihr, sobald der PR da ist.
 
 ---
 
@@ -49,12 +68,15 @@ damit könnt ihr eure Rolle aus Lab B in die Cloud schicken.
 
 ---
 
-## C1 — Der erste echte Lauf
+## C1 — Das gute Ticket
 
-**15 Minuten**
+**20 Minuten · Hands-on, braucht keine Cloud**
+
+Das hier ist der Teil, der über Erfolg oder Misserfolg einer Delegation entscheidet —
+lange bevor irgendein Agent startet.
 
 In `modul-4/aufgabenkarten/` liegen vier Karten. **Drei sind gut. Eine ist Müll.**
-Findet heraus, welche — bevor ihr delegiert.
+Findet heraus, welche.
 
 | Karte | Thema |
 |---|---|
@@ -72,24 +94,15 @@ Findet heraus, welche — bevor ihr delegiert.
    * Hinweise, welche Dateien betroffen sind
 2. Einigt euch, welche Karte die schlechte ist, und **schreibt sie um**, bis sie die
    Kriterien erfüllt. Ablegen als `modul-4/aufgabenkarten/C1-vw-4714-repariert.md`.
-3. Delegiert **eine gute Karte**:
-
-   ```
-   /delegate
-   ```
-
-   oder
-
-   ```bash
-   gh agent-task create -F modul-4/aufgabenkarten/C1-vw-4711.md
-   ```
-
-4. Verfolgt den Lauf im **Agents-Tab** auf github.com (in der Doku heißt er so; die
-   Blogposts nennen ihn „Agent HQ" oder „Mission Control" — dasselbe Ding).
-   Oder im Terminal mit `gh agent-task view <id>`.
+3. **Die Probe:** Lest eure reparierte Karte einem anderen Team vor — ohne Kontext.
+   Wenn Rückfragen kommen, kommen sie auch vom Agenten. Nur merkt der es nicht und
+   rät stattdessen.
 
 **Denkt daran:** Ein Issue, das ihr dem Agenten zuweist, ist ein **Prompt**. Lest eure
 Karte noch einmal mit dieser Brille. Würdet ihr sie so in ein Chatfenster tippen?
+
+**Fertig, wenn** `C1-vw-4714-repariert.md` existiert und ihr in einem Satz sagen könnt,
+welcher Teil der ursprünglichen Karte **gar nicht** delegierbar ist — und warum nicht.
 
 ### Was ihr NICHT delegiert
 
@@ -108,11 +121,50 @@ Karte `C1-vw-4714.md` fällt in mindestens zwei dieser Kategorien. In welche?
 
 ---
 
+## Dazwischen — Die Delegation
+
+**5 Minuten · Demo vorne, oder ihr selbst**
+
+Jetzt geht eine der **guten** Karten in die Cloud. Aus einer laufenden Session:
+
+```
+/delegate
+```
+
+oder direkt aus dem Terminal, ohne Session:
+
+```bash
+gh agent-task create -F modul-4/aufgabenkarten/C1-vw-4711.md --follow
+gh agent-task list
+gh agent-task view <id>
+```
+
+Danach legt Copilot einen Branch an, öffnet einen **Draft-PR** und arbeitet im
+Hintergrund weiter — auch wenn der Laptop zugeklappt wird.
+
+**Worauf ihr achtet, während es läuft** (das ist der eigentliche Inhalt dieser fünf
+Minuten, nicht der Tastendruck):
+
+* Im **Agents-Tab** auf github.com: die drei Statusstufen *läuft · wartet auf Review ·
+  fertig*. Mehrere Läufe stehen dort nebeneinander.
+* Im **Setup-Log**: `setup-java`, der Maven-Cache, `dependency:go-offline`. Das ist der
+  Beweis, dass die Umgebung aus `copilot-setup-steps.yml` wirklich gegriffen hat.
+* Die **Wartezeit**. Ein Lauf dauert typischerweise zehn bis dreißig Minuten. Genau
+  deshalb macht ihr jetzt C3 und kommt später zu C2 zurück.
+
+> **In der Demo-Variante** löst der Trainer aus, ihr schaut zu und stellt Fragen.
+> Der PR, den ihr gleich in C2 reviewt, ist ein **echter** Agent-PR — nur nicht eurer.
+> Für das Review macht das keinen Unterschied. Für die Frage „darf das gemerged
+> werden?" erst recht nicht.
+
+---
+
 ## C2 — Review am Gate
 
-**15 Minuten**
+**15 Minuten · Hands-on**
 
-Der Draft-PR ist der spannende Teil, nicht der Diff.
+Der Draft-PR ist der spannende Teil, nicht der Diff. Ihr braucht dafür nur **Leserechte
+im Browser** — das reicht für alles, was hier zu tun ist.
 
 **Prüft in dieser Reihenfolge:**
 
@@ -140,7 +192,12 @@ Der Draft-PR ist der spannende Teil, nicht der Diff.
 * Merge ja oder nein — **mit Begründung**
 * Ein Punkt, an dem der Agent es besser gemacht hat, als ihr erwartet habt
 * Ein Punkt, an dem ihr nachbessern musstet
-* Credits und Laufzeit (für den Messbogen aus Modul 3)
+* Credits und Laufzeit für den Messbogen aus Modul 3 — in der Demo-Variante nennt
+  euch der Trainer die Zahlen aus seinem Lauf
+
+> **Das ist die Übung, die ihr am Montag wirklich braucht.** Delegieren lernt man in
+> einer Minute. Zu entscheiden, ob ein Agent-PR gemerged werden darf, ist die Arbeit,
+> die bleibt — und die niemand euch abnimmt.
 
 ---
 
@@ -302,7 +359,7 @@ Hinweis zur token-basierten Inference. Das ist kein Fehler.
 
 ## C4 — Kür: Portfolio steuern
 
-**Wenn Zeit bleibt**
+**Wenn Zeit bleibt · nur in der Variante Vollgas**
 
 Delegiert drei kleine Tasks gleichzeitig (die drei guten Karten) und beobachtet sie
 parallel im Agents-Tab. Jeder bekommt einen eigenen Branch.
@@ -410,8 +467,10 @@ Anhang C der Vorlage `copilot-setup-steps.yml.vorlage` enthält die Checkliste d
 
 ## Checkpoint für das Plenum
 
-1. Welche Karte war die schlechte — und was genau hat gefehlt?
-2. Credits und Laufzeit eures delegierten Tasks (an die Tafel, neben eure Schätzung).
+1. Welche Karte war die schlechte — und welcher Teil davon ist **gar nicht**
+   delegierbar?
+2. Eure Merge-Entscheidung aus C2, mit Begründung. Credits und Laufzeit an die Tafel,
+   neben eure Schätzung aus Modul 3.
 3. Ein Satz zu eurem Workflow: Trigger, Safe Output, Owner.
 4. **Die Pflichtfrage:** Was ist der Schaden, wenn euer Workflow Unsinn liefert — und
    wer fängt ihn am Gate ab?
