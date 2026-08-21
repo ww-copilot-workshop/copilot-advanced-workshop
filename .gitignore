@@ -45,3 +45,6 @@ modul-1/uebungen/.chaos/
 # gh-aw erzeugt Lockfiles; die gehoeren in Lab C bewusst ins Repo,
 # deshalb NICHT ignorieren:
 # .github/workflows/*.lock.yml
+
+# macOS
+.DS_Store
