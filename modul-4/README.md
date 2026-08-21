@@ -279,6 +279,38 @@ Das ist keine Technikfrage. Das ist die Frage, an der Agent-Programme scheitern.
 
 ---
 
+## Gruppenarbeit — Entwerft euren eigenen Agentic Workflow
+
+**10 Minuten · Vierergruppen**
+
+Vorlage: **[`modul-4/gruppenarbeit-workflow-canvas.md`](gruppenarbeit-workflow-canvas.md)**
+— eine pro Gruppe, ausgedruckt oder auf dem Laptop.
+
+**Der Auftrag:** Skizziert einen Workflow für **euren** Alltag, nicht für die
+Voltwerk-Suite. Sechs Felder müssen ausgefüllt sein:
+
+**Trigger** (Zeitplan oder Ereignis) · **Auftrag in zwei Sätzen** · **erlaubte Tools** ·
+**Safe Output** (Issue, Kommentar oder Draft-PR) · **Owner** · **Budget**
+
+**Ablauf**
+
+* 7 Minuten entwerfen
+* 3 Minuten Speed-Feedback: Entwurf mit der Nachbargruppe tauschen und kommentieren.
+  **Kommentieren, nicht diskutieren** — die Zeit reicht nicht für beides.
+
+**Die Pflichtfrage am Ende — und die ist keine Formalie:**
+
+> Was ist der Schaden, wenn dieser Workflow Unsinn liefert?
+> Und wer fängt ihn am Gate ab — mit Namen, nicht mit Rolle?
+
+Wer den Schaden nicht benennen kann, hat den Workflow nicht zu Ende gedacht. Das ist
+kein Vorwurf, sondern der billigste Zeitpunkt, es zu merken.
+
+**Ergebnis:** ein umsetzbarer Entwurf pro Gruppe. Den besten setzen wir nach dem
+Workshop gemeinsam auf.
+
+---
+
 ## Die Umgebung, in der das läuft
 
 `modul-4/copilot-setup-steps.yml.vorlage` ist die Datei, die die Arbeitsumgebung des

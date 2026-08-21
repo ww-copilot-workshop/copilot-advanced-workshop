@@ -283,6 +283,37 @@ Sicherheitsnetz transformiert, macht die Fehler nur schneller.
 
 ---
 
+## Gruppenarbeit — Euer Modernisierungs-Backlog
+
+**10 Minuten · Vierergruppen**
+
+Vorlage: **[`modul-5/gruppenarbeit-backlog-canvas.md`](gruppenarbeit-backlog-canvas.md)**
+
+**Der Auftrag:** Sammelt reale Kandidaten aus **euren** Systemen und ordnet jeden in die
+Schleife ein:
+
+* Wo fehlt noch **Verständnis** (Schritt 1)?
+* Wo fehlen **Soll-Tests** (Schritt 2)?
+* Was ist reif für den **Umbau** (Schritt 3)?
+
+**Top 3 pro Gruppe**, jeweils mit dem konkreten ersten Schritt, dem passenden Werkzeug
+von heute und einem Namen.
+
+**Ablauf**
+
+* 7 Minuten sammeln und einordnen
+* 3 Minuten Galerie-Rundgang: die Backlogs hängen nebeneinander, jeder liest mit.
+  Sucht euch einen Kandidaten der Nachbargruppe und beantwortet schriftlich:
+  *warum steht der in Schritt X und nicht in Schritt Y?*
+
+**Der Fehler, den fast jede Gruppe macht:** Kandidaten in Schritt 3 einsortieren, weil
+der Code hässlich aussieht — obwohl niemand die Spec kennt. Das ist Schritt 1.
+**Hässlich ist kein Reifegrad.**
+
+**Ergebnis:** Kandidat 1 wird Tag 5 eurer Sieben-Tage-Liste. Nicht alle drei. Einer.
+
+---
+
 ## Checkpoint für das Plenum
 
 Jedes Team bringt mit:
