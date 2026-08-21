@@ -1,9 +1,9 @@
-# Modul 4 — Lab C: Delegieren auf eurer Infrastruktur
+# Modul 4 — Lab C: Delegieren und automatisieren
 
 **Zeit:** ca. 60 Minuten · **Sozialform:** Zweierteams
 
-> Der Agent ist Gast auf eurer Infrastruktur und hält sich an eure Hausordnung.
-> Heute schreibt ihr die Hausordnung.
+> Der Agent ist ein Gast, der sich an eure Hausordnung hält.
+> Heute schreibt ihr die Hausordnung — und schaut nach, ob er sich daran gehalten hat.
 
 ---
 
@@ -13,7 +13,7 @@
 |---|---|---|
 | **Interaktiv** | Euer Rechner, jede Aktion bestätigt | Ihr lernt gerade etwas über den Code |
 | **Autopilot** | Euer Rechner, Aktionen laufen durch | Abgegrenzte Aufgabe, ihr schaut zu, Sandbox an |
-| **`/delegate`** | GitHub, auf **eurem** Runner | Ihr wollt die Aufgabe loswerden und weiterarbeiten |
+| **`/delegate`** | GitHub, auf einem GitHub-hosted Runner | Ihr wollt die Aufgabe loswerden und weiterarbeiten |
 
 Der zentrale Unterschied: **Autopilot ist euer Rechner. `/delegate` ist Cloud.** Bei
 `/delegate` legt Copilot einen Branch an, öffnet einen **Draft-PR**, arbeitet im
@@ -111,8 +111,8 @@ Der Draft-PR ist der spannende Teil, nicht der Diff.
 
 **Prüft in dieser Reihenfolge:**
 
-1. **Das Setup-Log.** Sind die Setup-Steps gelaufen? Kam die Dependency-Auflösung über
-   Artifactory? Steht dort euer ARC Scale Set als Runner?
+1. **Das Setup-Log.** Sind die Setup-Steps überhaupt gelaufen? Hat `setup-java` die
+   richtige Version gezogen? Wurden die Maven-Abhängigkeiten vorab aufgelöst?
 2. **Der Testlauf.** Hat der Agent `mvn -q test` wirklich ausgeführt — oder nur behauptet,
    es sei grün? Sucht die Ausgabe im Log.
 3. **Die Begründung.** Der Agent beschreibt im PR, was er getan hat. Deckt sich das mit
@@ -279,10 +279,13 @@ Das ist keine Technikfrage. Das ist die Frage, an der Agent-Programme scheitern.
 
 ---
 
-## Die Infrastruktur, auf der das läuft
+## Die Umgebung, in der das läuft
 
-`modul-4/copilot-setup-steps.yml.vorlage` ist die Datei, die eure Umgebung definiert.
-Sie gehört nach `.github/workflows/copilot-setup-steps.yml`.
+`modul-4/copilot-setup-steps.yml.vorlage` ist die Datei, die die Arbeitsumgebung des
+Agenten definiert. Sie gehört nach `.github/workflows/copilot-setup-steps.yml`.
+
+Heute läuft alles auf **GitHub-hosted Runnern** (`ubuntu-latest`). Ihr braucht dafür
+keine eigene Infrastruktur — nur ein Repo, in dem der Coding Agent aktiviert ist.
 
 **Die harten Regeln:**
 
@@ -292,20 +295,46 @@ Sie gehört nach `.github/workflows/copilot-setup-steps.yml`.
   **Alles andere wird still ignoriert** — auch ein `env:` auf Job-Ebene.
   Environment-Variablen gehören auf **Step-Ebene**.
 * `timeout-minutes` maximal **59**.
-* `runs-on` zeigt auf euer ARC Scale Set.
-* Unterstützt sind **Ubuntu x64** und Windows 64-bit. Persistente Runner sind tabu —
-  jeder Lauf ist ephemer.
-* Für self-hosted Runner muss die **eingebaute Copilot-Firewall deaktiviert** werden.
-  Eure Egress-Allowlist übernimmt deren Rolle. Das ist eine bewusste Übergabe von
-  Verantwortung — schreibt auf, wer sie hat.
+* `runs-on` ist heute **`ubuntu-latest`** — GitHub-hosted, keine eigene Infrastruktur nötig.
 * **Secrets für den Agenten sind ein eigener Typ.** Sie liegen unter
   *Settings → Secrets and variables → **Agents***. Actions-Secrets sind für den Agenten
   **unsichtbar**. Der Präfix `COPILOT_MCP_` hat Sonderverhalten.
-* `actions/setup-java` hat **keinen** Input für Maven-Mirrors. Die `settings.xml` für
-  Artifactory müsst ihr selbst schreiben — die Vorlage zeigt wie, inklusive des
-  gequoteten Heredocs, damit `${env.X}` von Maven und nicht von der Shell aufgelöst wird.
 * Schlagen die Setup-Steps fehl, **bricht der Agent nicht ab** — er arbeitet ohne die
   Umgebung weiter. Genau deshalb müsst ihr ins Setup-Log schauen und nicht nur auf den Diff.
+
+---
+
+## Der Schritt danach: eigene Runner
+
+**3 Minuten · Konzept, kein Lab**
+
+Heute läuft der Agent auf GitHub-hosted Runnern. Das ist der richtige Anfang: Ihr
+lernt Delegation, Review und Gate, ohne gleichzeitig Infrastruktur zu debuggen.
+
+Der Coding Agent unterstützt aber auch **self-hosted Runner** (GA). Das ist der Schritt,
+den ihr geht, sobald der Agent an Code arbeiten soll, der euer Netz nicht verlässt, oder
+Abhängigkeiten braucht, die nur intern erreichbar sind.
+
+**Was sich dann ändert — und was es kostet:**
+
+| | GitHub-hosted (heute) | Self-hosted (später) |
+|---|---|---|
+| `runs-on` | `ubuntu-latest` | euer Runner-Pool |
+| Netzgrenze | eingebaute Copilot-Firewall | **eure** Egress-Allowlist |
+| Abhängigkeiten | Maven Central | euer Repository-Proxy |
+| Runner-Lebensdauer | von GitHub verwaltet | ephemer, das ist Pflicht |
+| Kosten | Actions-Minuten | Actions-Minuten **plus** euer Compute |
+| Verantwortung | GitHub | ihr |
+
+Die entscheidende Zeile ist die vorletzte: **Die eingebaute Firewall wird für
+self-hosted Runner deaktiviert.** Eure Allowlist tritt an ihre Stelle. Das ist keine
+Konfigurationsdetail, sondern eine Übergabe von Verantwortung.
+
+**Die Frage für eure Rückfahrt:** Wer in eurem Haus besitzt diese Allowlist, und wer darf
+sie ändern? Wenn ihr darauf keine Antwort mit einem Namen habt, ist der Wechsel auf
+eigene Runner noch nicht vorbereitet — egal wie fertig die Technik ist.
+
+Anhang C der Vorlage `copilot-setup-steps.yml.vorlage` enthält die Checkliste dazu.
 
 ---
 

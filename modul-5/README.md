@@ -260,13 +260,22 @@ Testbefehl. Zwei davon sind delegierbar, eines nicht. Welches, und warum?
 
 **Java-Upgrades mit Plan.** Für größere Sprünge — JDK-Versionen, Jakarta EE, Spring Boot —
 gibt es Werkzeuge, die Upgrade-Blocker analysieren, einen Plan ins Repo legen und
-OpenRewrite-Transformationen fahren. Was davon heute in eurer CLI verfügbar ist,
-beantwortet:
+OpenRewrite-Transformationen fahren. Zwei davon laufen direkt in der CLI:
 
 ```bash
-copilot plugin marketplace browse copilot-plugins
 copilot plugin marketplace browse awesome-copilot
+copilot plugin install github-copilot-modernization@awesome-copilot
+copilot plugin install java-modernization-studio@awesome-copilot
 ```
+
+`github-copilot-modernization` fährt Java-Upgrades (8 → 21, Spring Boot 2.x → 3.x) über
+eine Hierarchie aus Orchestrator, Koordinatoren und Executors und kann dabei ein
+Regelwerk eurer Organisation einbeziehen. `java-modernization-studio` ist die geführte
+Oberfläche dazu: Readiness, Assessment, priorisierter Plan, Validierungs-Gates.
+
+**Fasst das heute nicht an, wenn ihr in D1 bis D4 noch nicht durch seid.** Ein
+Modernisierungslauf ohne die Soll-Tests aus D2 ist genau der Fehler, den dieses Modul
+verhindern soll.
 
 **Die Einordnung ist wichtiger als das Werkzeug:** So etwas beschleunigt **Schritt 3**
 der Schleife. Landkarte und Soll-Tests bleiben eure Aufgabe. Ein Werkzeug, das ohne

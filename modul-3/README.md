@@ -107,7 +107,7 @@ schätzen, dann diskutieren — nicht umgekehrt.
 
 | Szenario | Credits | Actions-Min. | Erste Stellschraube |
 |---|---|---|---|
-| **(a)** Ein delegierter Bugfix auf eurem Azure-Runner: mittelgroßes Java-Modul, Test vorhanden, Draft-PR am Ende | | | |
+| **(a)** Ein delegierter Bugfix: mittelgroßes Java-Modul, Test vorhanden, Draft-PR am Ende | | | |
 | **(b)** Der nächtliche Doku-Drift-Workflow, einen Monat lang, 30 Läufe | | | |
 | **(c)** Ein Sprint: fünf parallele Tasks pro Tag, zehn Arbeitstage | | | |
 
@@ -124,9 +124,13 @@ Dazu je Szenario: **welche Stellschraube setzt ihr zuerst?**
    Workflow sichtbar machen, bevor jemand fragt.
 
 **Die zwei Zähler.** Cloud-Läufe kosten immer **beides**: AI Credits für die Arbeit des
-Agenten **und** Actions-Minuten auf eurem Runner. Wer nur auf einen Zähler schaut,
-unterschätzt systematisch. Bei einem self-hosted ARC-Pool auf Azure kommen die
-Compute-Kosten des Scale Sets noch obendrauf — die stehen in **keinem** GitHub-Report.
+Agenten **und** Actions-Minuten. Wer nur auf einen Zähler schaut, unterschätzt
+systematisch.
+
+Und ein dritter, der heute nicht anfällt: Wer den Agenten später auf **eigene**
+Runner holt, zahlt deren Compute zusätzlich — und diese Kosten stehen in **keinem**
+GitHub-Report, sondern auf der Rechnung des Cloud-Anbieters. Nehmt das in eure
+Schätzung auf, sobald ihr diesen Schritt geht.
 
 **Nach Lab C füllt ihr die vierte Spalte:** die echten Zahlen. Die Spannbreite zwischen
 Schätzung und Messung ist der interessante Teil, nicht der Mittelwert.

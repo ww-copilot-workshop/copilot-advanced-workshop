@@ -116,10 +116,9 @@ und am Morgen gemeinsam geprüft:
 
 - [ ] Zugriff auf die Workshop-Organisation auf github.com
 - [ ] Copilot Coding Agent ist für das Übungs-Repo aktiviert
-- [ ] Der Azure-Runner-Pool (ARC Scale Set) ist erreichbar
+- [ ] AI Credits stehen zur Verfügung
 - [ ] `.github/workflows/copilot-setup-steps.yml` ist im Repo hinterlegt
-- [ ] Artifactory-Zugangsdaten liegen unter *Settings → Secrets and variables → **Agents***
-      (**nicht** unter Actions — das ist ein eigener Secret-Typ)
+      (läuft auf `ubuntu-latest`, GitHub-hosted — es braucht keine eigene Infrastruktur)
 
 Wenn davon etwas fehlt, läuft Modul 4 im **Trial-Modus**:
 

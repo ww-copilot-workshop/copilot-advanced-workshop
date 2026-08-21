@@ -2,7 +2,7 @@
 # VORLAGE — .github/workflows/copilot-setup-steps.yml
 #
 # Diese Datei definiert die Umgebung, in der der Copilot Coding Agent arbeitet.
-# Sie läuft VOR dem Agenten. Danach ist das Netz zu, und was nicht da ist, fehlt.
+# Sie läuft VOR dem Agenten. Was danach fehlt, fehlt für den ganzen Lauf.
 #
 # Zielort:  .github/workflows/copilot-setup-steps.yml
 # Prüfen:   Als normalen Actions-Workflow über workflow_dispatch starten.
@@ -28,11 +28,10 @@ jobs:
   copilot-setup-steps:
 
     # TODO(1): Runner wählen.
-    #   GitHub-hosted:            ubuntu-latest
-    #   Euer ARC Scale Set:       der Name des Scale Sets, z.B. arc-java-ephemeral
+    #   Heute:  ubuntu-latest   (GitHub-hosted, keine eigene Infrastruktur nötig)
+    #   Größer: ubuntu-4-core   (Larger Runner, falls der Build lange braucht)
     #
-    #   Unterstützt sind Ubuntu x64 und Windows 64-bit. Persistente Runner sind
-    #   nicht zulässig — jeder Lauf ist ephemer. Das ist keine Empfehlung.
+    #   Unterstützt sind Ubuntu x64 und Windows 64-bit.
     runs-on: ubuntu-latest
 
     # TODO(2): Laufzeitbegrenzung. Maximum ist 59 — das entspricht dem harten
@@ -69,60 +68,13 @@ jobs:
             **/pom.xml
 
       # ---------------------------------------------------------------------
-      # TODO(3): Artifactory-Proxy einrichten.
-      #
-      # actions/setup-java hat KEINEN Input für Maven-Mirrors. Die settings.xml
-      # müsst ihr selbst schreiben. Vervollständigt den Block unten.
-      #
-      # Zwei Dinge, die hier wichtig sind:
-      #
-      #   1. Das Heredoc ist mit <<'EOF' gequotet (einfache Anführungszeichen).
-      #      Dadurch schreibt die Shell ${env.X} WÖRTLICH in die Datei, und Maven
-      #      löst es später zur Laufzeit auf. Ohne die Quotes ersetzt die Shell
-      #      die Variablen sofort — und schreibt eure Zugangsdaten im Klartext
-      #      ins Log, falls jemand `set -x` aktiviert hat.
-      #
-      #   2. ARTIFACTORY_URL, ARTIFACTORY_USER und ARTIFACTORY_TOKEN kommen aus
-      #      Settings > Secrets and variables > AGENTS.
-      #      NICHT aus Actions-Secrets — die sind für den Agenten unsichtbar.
-      #      Das ist ein eigener Secret-Typ. Der Präfix COPILOT_MCP_ hat noch
-      #      einmal ein eigenes Sonderverhalten.
-      # ---------------------------------------------------------------------
-      - name: Maven settings.xml für Artifactory schreiben
-        run: |
-          mkdir -p "$HOME/.m2"
-          cat > "$HOME/.m2/settings.xml" <<'EOF'
-          <?xml version="1.0" encoding="UTF-8"?>
-          <settings xmlns="http://maven.apache.org/SETTINGS/1.0.0">
-            <mirrors>
-              <mirror>
-                <id>artifactory</id>
-                <name>Artifactory Remote Repository Proxy</name>
-                <url>${env.ARTIFACTORY_URL}</url>
-                <!-- TODO(3a): Welche Repositories soll dieser Mirror ersetzen?
-                     Für einen Proxy, der alles abdeckt, gibt es genau einen Wert. -->
-                <mirrorOf>TODO</mirrorOf>
-              </mirror>
-            </mirrors>
-            <servers>
-              <server>
-                <!-- TODO(3b): Die id MUSS mit der id des Mirrors übereinstimmen,
-                     sonst greifen die Zugangsdaten nicht. Häufiger Fehler. -->
-                <id>TODO</id>
-                <username>${env.ARTIFACTORY_USER}</username>
-                <password>${env.ARTIFACTORY_TOKEN}</password>
-              </server>
-            </servers>
-          </settings>
-          EOF
-
-      # ---------------------------------------------------------------------
-      # TODO(4): Abhängigkeiten vorab holen.
+      # TODO(3): Abhängigkeiten vorab holen.
       #
       # Warum das wichtig ist: Nach den Setup-Steps ist der Netzzugang des
-      # Agenten auf eure Egress-Allowlist beschränkt. Was jetzt nicht im
-      # lokalen Repository liegt, fehlt später — und der Agent scheitert
-      # an einer Stelle, die mit seiner eigentlichen Aufgabe nichts zu tun hat.
+      # Agenten durch die eingebaute Copilot-Firewall beschränkt. Was jetzt
+      # nicht im lokalen Repository liegt, fehlt später — und der Agent
+      # scheitert an einer Stelle, die mit seiner eigentlichen Aufgabe
+      # nichts zu tun hat.
       #
       # Der passende Maven-Aufruf holt alle Abhängigkeiten, ohne zu bauen.
       # ---------------------------------------------------------------------
@@ -130,7 +82,7 @@ jobs:
         run: mvn -B -ntp -DskipTests TODO
 
       # ---------------------------------------------------------------------
-      # TODO(5) — optional, aber empfohlen:
+      # TODO(4) — optional, aber empfohlen:
       # Ein Schritt, der beweist, dass die Umgebung funktioniert. Zum Beispiel
       # ein Testlauf. Denkt daran: Schlagen die Setup-Steps fehl, BRICHT DER
       # AGENT NICHT AB — er arbeitet ohne die Umgebung weiter und produziert
@@ -140,21 +92,82 @@ jobs:
       # ---------------------------------------------------------------------
 
 # =============================================================================
-# NOCH ZU KLÄREN, bevor das produktiv geht — schreibt es in euren PR:
+# ANHANG A — Secrets für den Agenten
 #
-#   [ ] Die eingebaute Copilot-Firewall MUSS für self-hosted Runner deaktiviert
-#       werden. Eure Egress-Allowlist übernimmt deren Rolle. Wer besitzt diese
-#       Allowlist, und wer darf sie ändern?
+# Secrets liegen unter Settings > Secrets and variables > AGENTS.
+# Das ist ein EIGENER Secret-Typ. Actions-Secrets sind für den Agenten
+# unsichtbar — auch dann, wenn sie exakt so heißen.
 #
-#   [ ] Welche Hosts braucht der Agent über euren Proxy zusätzlich zu
-#       Artifactory? (GitHub-API, Copilot-Inference-Endpunkte, Actions-Cache.)
+# Sie stehen in den Setup-Steps als normale Environment-Variablen zur
+# Verfügung, aber nur auf STEP-Ebene (siehe die Warnung oben).
 #
-#   [ ] Proxy-Konfiguration für den Agenten läuft über Environment-Variablen.
-#       Auf STEP-Ebene, nicht auf Job-Ebene. Siehe oben.
+# Der Präfix COPILOT_MCP_ hat Sonderverhalten: Secrets mit diesem Präfix
+# werden an konfigurierte MCP-Server durchgereicht.
+# =============================================================================
+
+# =============================================================================
+# ANHANG B — Wenn ihr später einen internen Repository-Proxy anbindet
 #
-#   [ ] Org-Level Runner-Controls können Repo-Overrides sperren. Klärt, ob euer
-#       Repo überhaupt ein eigenes runs-on setzen darf.
+# Heute nicht nötig: ubuntu-latest zieht direkt von Maven Central.
+# Sobald ihr im eigenen Haus arbeitet, kommt dieser Schritt dazu.
+# Er steht hier, damit ihr ihn nicht neu erfinden müsst.
 #
+#      - name: Maven settings.xml für internen Proxy schreiben
+#        run: |
+#          mkdir -p "$HOME/.m2"
+#          cat > "$HOME/.m2/settings.xml" <<'EOF'
+#          <?xml version="1.0" encoding="UTF-8"?>
+#          <settings xmlns="http://maven.apache.org/SETTINGS/1.0.0">
+#            <mirrors>
+#              <mirror>
+#                <id>intern</id>
+#                <url>${env.REPO_PROXY_URL}</url>
+#                <mirrorOf>*</mirrorOf>
+#              </mirror>
+#            </mirrors>
+#            <servers>
+#              <server>
+#                <!-- id MUSS mit der id des Mirrors uebereinstimmen,
+#                     sonst greifen die Zugangsdaten nicht. Haeufigster Fehler. -->
+#                <id>intern</id>
+#                <username>${env.REPO_PROXY_USER}</username>
+#                <password>${env.REPO_PROXY_TOKEN}</password>
+#              </server>
+#            </servers>
+#          </settings>
+#          EOF
+#
+# Zwei Details, die hier wirklich zählen:
+#
+#   1. Das Heredoc ist mit <<'EOF' gequotet (einfache Anführungszeichen).
+#      Dadurch schreibt die Shell ${env.X} WÖRTLICH in die Datei, und Maven
+#      löst es erst zur Laufzeit auf. Ohne die Quotes ersetzt die Shell die
+#      Variablen sofort — und schreibt eure Zugangsdaten im Klartext in die
+#      Datei und, bei aktivem `set -x`, ins Log.
+#
+#   2. actions/setup-java hat KEINEN Input für Maven-Mirrors. Diese Datei
+#      müsst ihr selbst schreiben. Es gibt keinen kürzeren Weg.
+# =============================================================================
+
+# =============================================================================
+# ANHANG C — Wenn ihr später auf eigene Runner wechselt
+#
+# Der Coding Agent unterstützt self-hosted Runner (GA). Was sich dann ändert:
+#
+#   [ ] runs-on zeigt auf euren Runner-Pool statt auf ubuntu-latest.
+#   [ ] Jeder Lauf muss ephemer sein. Persistente Runner sind nicht zulässig.
+#   [ ] Die eingebaute Copilot-Firewall wird für self-hosted Runner
+#       deaktiviert. Eure eigene Egress-Allowlist übernimmt ihre Rolle —
+#       eine bewusste Übergabe von Verantwortung. Klärt vorher, WER sie hat.
+#   [ ] Der Agent braucht Netzzugang zu den GitHub- und Copilot-Endpunkten
+#       plus zu eurem Repository-Proxy. Proxy-Einstellungen laufen über
+#       Environment-Variablen auf Step-Ebene.
+#   [ ] Org-Level Runner-Controls können Repo-Overrides sperren. Klärt, ob
+#       euer Repo überhaupt ein eigenes runs-on setzen darf.
 #   [ ] Copilot Code Review teilt sich standardmäßig die Umgebung mit dem
 #       Coding Agent. Wollt ihr das trennen?
+#
+# Merksatz für diesen Schritt: Ihr tauscht eine fertige, abgesicherte
+# Umgebung gegen eine eigene ein. Der Gewinn ist Kontrolle, der Preis ist
+# Verantwortung. Beides gehört in dieselbe Entscheidungsvorlage.
 # =============================================================================
