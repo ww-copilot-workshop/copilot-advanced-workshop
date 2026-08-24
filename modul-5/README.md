@@ -2,15 +2,16 @@
 
 **Zeit:** 45 Minuten angesetzt · **Sozialform:** Zweierteams
 
-> **Zur Zeit, ehrlich:** Wir haben den Sprint durchgespielt. **D2 allein braucht 35 bis
-> 55 Minuten**, nicht 15 — der teure Teil ist nicht das Schreiben der Tests, sondern das
-> Einordnen der roten. Und genau das ist der Punkt der Übung.
->
-> **Empfehlung: D1 kurz, D2 in voller Länge, D3 wenn Zeit ist. D4 macht ihr gemeinsam
-> im Plenum.** Wer D2 hetzt, um D4 zu schaffen, hat den Tag falsch herum priorisiert.
-
 > **Verstehen → Absichern → Verändern → Verifizieren.** Immer im Kreis, immer in
 > dieser Reihenfolge. Wer bei Schritt 3 anfängt, zementiert Fehler nur schneller.
+
+> **Zur Zeit, ehrlich:** Wir haben den Sprint durchgespielt. **D2 allein braucht 35 bis
+> 55 Minuten**, nicht 25 — der teure Teil ist nicht das Schreiben der Tests, sondern das
+> Einordnen der roten. Und genau das ist der Punkt der Übung.
+>
+> Deshalb ist die Zeit so verteilt: **D1 kurz, D2 in voller Länge, D3 ist Kür, D4 machen
+> wir gemeinsam im Plenum.** Wer D2 hetzt, um alles zu schaffen, hat den Tag falsch
+> herum priorisiert.
 
 ---
 
@@ -35,14 +36,12 @@ Nicht die Spec.
 
 ## D1 — Die Landkarte
 
-**10 Minuten**
+**8 Minuten**
 
 Bevor ihr irgendetwas anfasst: versteht, was da ist.
 
-**Auftrag**
-
-Lasst Copilot eine Landkarte des Moduls erzeugen und **als Datei einchecken**:
-`modul-5/NOTES.md`.
+**Auftrag:** Lasst Copilot eine Landkarte des Moduls erzeugen und **als Datei
+einchecken**: `modul-5/NOTES.md`.
 
 Fragen, die tragen — deutlich besser als „erkläre mir den Code":
 
@@ -81,7 +80,8 @@ null an.
 
 ## D2 — Das Sicherheitsnetz: Soll-Tests aus der Spec
 
-**15 Minuten · das Herzstück des Moduls**
+**25 Minuten angesetzt · das Herzstück des Moduls. Nehmt euch die Zeit, sie ist
+eingeplant.**
 
 ### Das Anti-Pattern zuerst
 
@@ -155,7 +155,11 @@ niemand abnehmen.** Sie ist der Grund, warum ihr im Raum seid.
 > **Kalibrierung:** `AbrechnungsService` weicht an **acht** Stellen von den Regeln
 > S-1 bis S-8 ab. Findet ihr alle acht — ohne eine neunte zu erfinden?
 >
-> **Sechs** davon lassen sich mit **je einem** Referenzbeispiel aus Abschnitt 4
+> Von den dreizehn Referenzbeispielen werden **vier grün und neun rot**. Dass überhaupt
+> welche grün sind, ist Absicht: So seht ihr sofort, dass euer Testaufbau funktioniert
+> und der Code trotzdem falsch ist.
+>
+> **Sechs** der acht Abweichungen lassen sich mit **je einem** Referenzbeispiel
 > eindeutig belegen. Die restlichen zwei nicht: der fehlende **12-EUR-Deckel** (S-3)
 > und der fehlende **Mindestbetrag** (S-4) werden in den vorhandenen Beispielen von
 > je einem anderen Fehler überlagert. Für die beiden braucht ihr **eigene**
@@ -172,16 +176,18 @@ ob er ein Befund oder ein Testfehler ist.
 
 ---
 
-## D3 — Bugjagd
+## D3 — Bugjagd (Kür)
 
-**10 Minuten**
+**Wenn D2 euch Zeit gelassen hat**
 
 `modul-5/tickets/VW-4715.md` ist ein echtes Ticket aus dem Betrieb. Es enthält alles,
 was ihr braucht, und eine falsche Fährte.
 
 **Der Ablauf, nicht verhandelbar:**
 
-1. Stacktrace und Kontext hinein — Hypothesen heraus. Lasst euch **mehrere** geben.
+1. **Beobachtung und Kontext hinein — Hypothesen heraus.** Lasst euch **mehrere** geben.
+   Einen Stacktrace gibt es hier nicht: Der Report wirft keinen Fehler, er rechnet
+   falsch. Genau das macht diese Klasse Bugs so teuer.
 2. Prüft jede Hypothese gegen die Beobachtung. *„Funktioniert bis 96, kaputt ab 1000."*
    Eine Hypothese, die das nicht erklärt, ist falsch — egal wie plausibel sie klingt.
 3. **Minimaler Reproduzierer als Test.** Rot.
@@ -206,7 +212,7 @@ einem Satz erklären könnt, **warum die Grenze genau dort liegt, wo sie liegt.*
 
 ## D4 — Modernisieren, ohne ein Muster zu nennen
 
-**10 Minuten · und die Übung, an die ihr euch erinnern werdet**
+**12 Minuten · gemeinsam im Plenum, und die Übung, an die ihr euch erinnern werdet**
 
 In `AbrechnungsService.berechne(...)` steht ein Block mit dieser Markierung:
 
@@ -217,11 +223,11 @@ In `AbrechnungsService.berechne(...)` steht ein Block mit dieser Markierung:
 **Die Regel dieser Übung: Ihr dürft kein Entwurfsmuster benennen.**
 
 Nicht „Strategy". Nicht „Polymorphie". Nicht „Sealed Interface". Nicht „State Pattern".
-Kein Musternamen im Prompt. Wer eines nennt, hat verloren.
+Kein Mustername im Prompt. Wer eines nennt, hat verloren.
 
-**Warum?** Weil ihr Probleme lösen wollt, keine Schlagworte erfüllen. Ein Prompt, der ein
-Muster nennt, bekommt das Muster — auch dann, wenn es nicht passt. Ein Prompt, der die
-**Kräfte** beschreibt, bekommt eine Lösung.
+**Warum?** Weil ihr Probleme lösen wollt, keine Schlagworte erfüllen. Ein Prompt, der
+ein Muster nennt, bekommt das Muster — auch dann, wenn es nicht passt. Ein Prompt, der
+die **Kräfte** beschreibt, bekommt eine Lösung.
 
 Beschreibt also die Kräfte:
 
@@ -230,7 +236,7 @@ Refactoriere den markierten Block in AbrechnungsService.
 
 Kräfte:
 - Ein neuer Tarif soll hinzukommen können, ohne dass berechne() länger wird.
-- Das Verhalten je Tarif gehört an einer Stelle, nicht verteilt über mehrere Methoden.
+- Das Verhalten je Tarif gehört an eine Stelle, nicht verteilt über mehrere Methoden.
 - Der Nachttarif braucht Zugriff auf die Ladezeiten, die anderen nicht.
 - Das Verhalten darf sich nicht ändern: die Tests aus D2 müssen danach exakt
   dasselbe Ergebnis liefern wie davor.
@@ -241,38 +247,45 @@ Halte dich an AGENTS.md.
 **Dann die Auflösung.** Schaut euch an, was entstanden ist, und beantwortet:
 
 1. **Welches Muster ist entstanden?** (Es hat mit hoher Wahrscheinlichkeit einen Namen.)
-2. **Woher kam es?** Ihr habt es nicht genannt. Also: aus welcher Zeile in `AGENTS.md`
+2. **Woher kam es?** Ihr habt es nicht genannt. Also: Aus welcher Zeile in `AGENTS.md`
    stammt es? Lest Abschnitt 3.2 noch einmal.
 3. **Passt es?** Oder ist es überdimensioniert für drei Tarife? Das ist eine ernst
-   gemeinte Frage — die richtige Antwort kann „das war zu viel" sein.
+   gemeinte Frage; die richtige Antwort kann „das war zu viel" sein.
 
 **Der Effekt, um den es geht:** Der Vorschlag trägt euer Muster, obwohl niemand es
 benannt hat. Konventionen und Beispielcode im Repo wirken als Few-Shot. Das Review prüft
-**Angemessenheit**, nicht Musternamen.
+**Angemessenheit**, nicht Musternamen. Genau deshalb ist `AGENTS.md` die wichtigste
+Datei in eurem Repo — wichtiger als jeder Prompt, den ihr euch merkt.
 
-Genau deshalb ist `AGENTS.md` die wichtigste Datei in eurem Repo — wichtiger als jeder
-Prompt, den ihr euch merkt.
-
-**Fertig, wenn** `mvn -pl modul-5 -am test` **genau dieselben** Tests grün und rot
-zeigt wie vor dem Umbau. Ein Refactoring, das die Befundlage ändert, war keins.
-
-Belegt es, statt es zu behaupten:
+**Fertig, wenn** `mvn -pl modul-5 -am test` **genau dieselben** Tests grün und rot zeigt
+wie vor dem Umbau. Ein Refactoring, das die Befundlage ändert, war keins. Belegt es,
+statt es zu behaupten:
 
 ```bash
-mvn -pl modul-5 -am test 2>&1 | grep -E '^\[(ERROR|INFO)\] +[A-Za-z].*(:|Tests run)' | sort > /tmp/vorher.txt
-# ... umbauen ...
-mvn -pl modul-5 -am test 2>&1 | grep -E '^\[(ERROR|INFO)\] +[A-Za-z].*(:|Tests run)' | sort > /tmp/nachher.txt
+mvn -pl modul-5 -am test 2>&1 | grep -E 'Tests run:.*-- in |^\[ERROR\]   [A-Z][A-Za-z0-9_]*\.' | sed -E 's/Time elapsed: [0-9.,]+ s//' | sort > /tmp/vorher.txt
+```
+
+Dann umbauen. Danach dasselbe noch einmal, nach `nachher.txt`:
+
+```bash
+mvn -pl modul-5 -am test 2>&1 | grep -E 'Tests run:.*-- in |^\[ERROR\]   [A-Z][A-Za-z0-9_]*\.' | sed -E 's/Time elapsed: [0-9.,]+ s//' | sort > /tmp/nachher.txt
 diff /tmp/vorher.txt /tmp/nachher.txt && echo "IDENTISCH"
 ```
 
-> ⚠️ **Das funktioniert nur, wenn ihr D2 gemacht habt.** Ohne die Soll-Tests besteht die
-> Suite aus einem einzigen Alttest (BASIS-Tarif, 50 kW) — die Zweige `FLOTTE` und `NACHT`
-> deckt **kein** Test ab. Wir haben es geprüft: Setzt man den FLOTTE-Preis von 0,42 auf
-> 9,99 EUR/kWh, bleibt der Build grün.
+> **Warum das `sed` dazwischen steht:** Maven schreibt in jede Zeile die Laufzeit des
+> Tests. Ohne das `sed` unterscheiden sich zwei Läufe **desselben** Codes um ein paar
+> Millisekunden, und ihr jagt einen Unterschied, den es nicht gibt. Wir sind darauf
+> hereingefallen; jetzt seid ihr gewarnt. **Ein Vergleich ist nur so gut wie das, was
+> er wegfiltert.**
+
+> ⚠️ **Das funktioniert nur, wenn ihr D2 gemacht habt.** Ohne die Soll-Tests besteht
+> die Suite aus einem einzigen Alttest (BASIS-Tarif, 50 kW); die Zweige `FLOTTE` und
+> `NACHT` deckt **kein** Test ab. Wir haben es geprüft: Setzt man den FLOTTE-Preis von
+> 0,42 auf 9,99 EUR/kWh, meldet der Build weiterhin `BUILD SUCCESS`.
 >
 > Ein „unverändertes Verhalten", das von niemandem geprüft wird, ist eine Behauptung.
-> Das ist dieselbe Lektion wie in D2 — nur schmerzhafter, weil sie diesmal euren
-> eigenen Umbau betrifft.
+> Das ist dieselbe Lektion wie in D2, nur schmerzhafter, weil sie diesmal euren eigenen
+> Umbau betrifft.
 
 ---
 
@@ -324,12 +337,10 @@ Schleife ein:
 **Top 3 pro Gruppe**, jeweils mit dem konkreten ersten Schritt, dem passenden Werkzeug
 von heute und einem Namen.
 
-**Ablauf**
-
-* 7 Minuten sammeln und einordnen
-* 3 Minuten Galerie-Rundgang: die Backlogs hängen nebeneinander, jeder liest mit.
-  Sucht euch einen Kandidaten der Nachbargruppe und beantwortet schriftlich:
-  *warum steht der in Schritt X und nicht in Schritt Y?*
+**Ablauf:** 7 Minuten sammeln und einordnen, dann 3 Minuten Galerie-Rundgang — die
+Backlogs hängen nebeneinander, jeder liest mit. Sucht euch einen Kandidaten der
+Nachbargruppe und beantwortet schriftlich: *warum steht der in Schritt X und nicht in
+Schritt Y?*
 
 **Der Fehler, den fast jede Gruppe macht:** Kandidaten in Schritt 3 einsortieren, weil
 der Code hässlich aussieht — obwohl niemand die Spec kennt. Das ist Schritt 1.
@@ -344,6 +355,6 @@ der Code hässlich aussieht — obwohl niemand die Spec kennt. Das ist Schritt 1
 Jedes Team bringt mit:
 
 1. **Ein Aha aus D2** — welcher Befund hat euch überrascht?
-2. **Die Grenze aus D3** — warum genau dort?
+2. **Die Grenze aus D3** (wer sie gejagt hat) — warum genau dort?
 3. **Das Muster aus D4** — welches ist entstanden, und aus welcher AGENTS.md-Zeile?
 4. Und die unbequeme Frage: **Wie viele eurer eigenen Module haben eine SPEC.md?**
