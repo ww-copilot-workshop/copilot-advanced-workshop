@@ -478,19 +478,63 @@ Die schlechte Karte fällt in mindestens **zwei** dieser Kategorien. In welche?
 
 **5 Minuten · Demo vorne, oder ihr selbst**
 
-Jetzt geht eine der **guten** Karten in die Cloud. Aus einer laufenden Session:
+Jetzt geht eine der **guten** Karten in die Cloud. Es gibt zwei Wege, und sie
+funktionieren **grundverschieden**.
+
+### Weg 1 — aus einer laufenden Session: `/delegate`
+
+Der Befehl nimmt **keinen Text entgegen.** Es gibt kein „`/delegate` mach dies und
+das". Was er tut, steht in seiner eigenen Beschreibung:
+
+> *Send this session to GitHub and Copilot will create a PR.*
+
+**Die Session ist der Auftrag.** Alles, was ihr vorher in dieser Sitzung besprochen
+habt, wandert mit. Ihr baut also erst den Kontext auf und übergebt ihn dann:
 
 ```
-/delegate
+> Lies modul-4/aufgabenkarten/C1-vw-4711.md und fasse zusammen, was zu tun ist.
+
+  [Copilot liest die Karte und antwortet]
+
+> Was wirst du anfassen, und was ausdrücklich nicht?
+
+  [Jetzt seht ihr, ob er die Karte verstanden hat — und könnt nachschärfen]
+
+> Genau so. Setz es um.
+
+> /delegate
 ```
 
-oder direkt aus dem Terminal, ohne Session:
+Optional mit einem Zielbranch:
+
+```
+/delegate --base entwicklung
+```
+
+**Das ist der eigentliche Vorteil gegenüber einem Chatfenster:** Ihr könnt vorher
+prüfen, ob er es verstanden hat. Die Frage *„Was wirst du anfassen, und was nicht?"*
+kostet dreißig Sekunden und rettet einen halbstündigen Lauf. Ein Agent, der schon
+läuft, lässt sich nicht mehr nachjustieren — ihr könnt ihn nur abbrechen.
+
+### Weg 2 — direkt aus dem Terminal, ohne Session
+
+Hier ist die **Karte** der Auftrag, nicht die Session. Kein Vorgespräch, keine
+Möglichkeit nachzufragen — die Karte muss allein tragen. Genau deshalb war C1 wichtig.
 
 ```bash
 gh agent-task create -F modul-4/aufgabenkarten/C1-vw-4711.md --follow
 gh agent-task list
 gh agent-task view <id>
 ```
+
+`-F` liest die Beschreibung aus einer Datei. Ohne `-F` geht auch Fließtext direkt:
+`gh agent-task create "..."`. Und `--base <branch>` wählt den Zielbranch, falls nicht
+der Standardbranch gemeint ist.
+
+> **Achtung bei Weg 2:** Der Cloud-Agent arbeitet auf dem Stand, der **im Repository**
+> liegt — nicht auf eurem Arbeitsverzeichnis. Eine Karte, die ihr gerade lokal
+> geschrieben und nicht committet habt, sieht er nicht. Bei Weg 1 ist das anders: Dort
+> reist der Sitzungskontext mit, auch wenn nichts committet ist.
 
 Danach legt Copilot einen Branch an, öffnet einen **Draft-PR** und arbeitet im
 Hintergrund weiter — auch wenn der Laptop zugeklappt wird.
