@@ -153,7 +153,7 @@ bash modul-1/uebungen/A2-branch-chaos.sh
 > Branch:
 >
 > ```bash
-> git checkout -b uebung/<euer-name>     # falls noch nicht geschehen
+> git checkout -b uebung/euer-name     # falls noch nicht geschehen
 > git add -A && git commit -m "feat(telemetrie): implementiere LadepunktStatistik"
 > ```
 >

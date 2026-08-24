@@ -172,18 +172,18 @@ Domains ohne Protokoll bedeuten `https://`.
 
 ```bash
 copilot mcp list
-copilot mcp add <name> -- <kommando> [args...]         # lokal (stdio)
-copilot mcp add --transport http <name> <url>          # remote
-copilot mcp add <name> --tools "tool_a,tool_b" -- ...  # Tool-Allowlist
-copilot mcp get <name>
-copilot mcp remove <name>
+copilot mcp add NAME -- KOMMANDO [args...]         # lokal (stdio)
+copilot mcp add --transport http NAME URL          # remote
+copilot mcp add NAME --tools "tool_a,tool_b" -- ...  # Tool-Allowlist
+copilot mcp get NAME
+copilot mcp remove NAME
 
 copilot skill list
 copilot skill add <datei|url|verzeichnis> [--project]
-copilot skill remove <name>
+copilot skill remove NAME
 
 copilot plugin marketplace browse awesome-copilot      # vorkonfiguriert
-copilot plugin install <name>@awesome-copilot
+copilot plugin install NAME@awesome-copilot
 copilot plugin list                                    # was ist installiert
 #  (`copilot plugins` ist feature-gated und meldet meist
 #   "The plugins command is not available.")
@@ -247,13 +247,13 @@ Gültige Tool-Namen im CLI: `read`, `search`, `edit`, `execute`, `shell`, `bash`
 ```bash
 gh extension install github/gh-aw
 gh aw init --engine copilot
-gh aw new <name> --engine copilot
+gh aw new NAME --engine copilot
 gh aw compile                 # .md  ->  .lock.yml   (BEIDE committen!)
 gh aw validate                # nur prüfen, kein Lockfile
-gh aw trial ./.github/workflows/x.md --clone-repo <org>/<repo>
-gh aw run <name>
-gh aw logs <name>
-gh aw audit <run-id> --parse
+gh aw trial ./.github/workflows/x.md --delete-host-repo-after
+gh aw run NAME
+gh aw logs NAME
+gh aw audit RUN-ID --parse
 gh aw status | health | forecast | domains | doctor
 ```
 

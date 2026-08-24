@@ -152,7 +152,7 @@ schaltet. Kombiniert mit
 
 ```bash
 gh aw health          # Erfolgsquoten je Workflow
-gh aw audit <run-id>  # was ein einzelner Lauf wirklich getan hat
+gh aw audit RUN-ID  # was ein einzelner Lauf wirklich getan hat
 ```
 
 habt ihr die drei Zahlen, die eine Betriebsentscheidung tragen: **Was kostet er, wie oft

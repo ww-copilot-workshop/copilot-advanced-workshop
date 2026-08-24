@@ -72,7 +72,7 @@ Nenne mir das aktuelle Verzeichnis und den Git-Branch.
 ## 4. Repository klonen und bauen
 
 ```bash
-git clone <URL-des-Workshop-Repos>
+git clone REPO-URL
 cd copilot-advanced-workshop
 mvn -q test
 ```
@@ -83,7 +83,7 @@ gehören zu Übung A1 und sind dort mit `@Disabled` abgeschaltet.
 Legt euch gleich einen Arbeitsbranch an:
 
 ```bash
-git checkout -b uebung/<euer-name>
+git checkout -b uebung/euer-name
 ```
 
 ---
@@ -123,7 +123,7 @@ und am Morgen gemeinsam geprüft:
 Wenn davon etwas fehlt, läuft Modul 4 im **Trial-Modus**:
 
 ```bash
-gh aw trial ./.github/workflows/doku-drift.md --clone-repo <org>/<repo> --delete-host-repo-after
+gh aw trial ./.github/workflows/doku-drift.md --delete-host-repo-after
 ```
 
 Trial läuft gegen ein simuliertes Repository. Keine echten Issues, keine echten PRs.

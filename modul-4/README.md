@@ -58,7 +58,7 @@ gh agent-task create "Behebe VW-4711 ..." --follow
 gh agent-task create -F modul-4/aufgabenkarten/C1-vw-4711.md
 gh agent-task create -F modul-4/aufgabenkarten/C1-vw-4711.md --custom-agent abrechnungs-reviewer
 gh agent-task list
-gh agent-task view <id>
+gh agent-task view TASK-ID
 ```
 
 `-F -` liest von stdin. `--custom-agent my-agent` benutzt `.github/agents/my-agent.md` —
@@ -540,7 +540,7 @@ Möglichkeit nachzufragen — die Karte muss allein tragen. Genau deshalb war C1
 ```bash
 gh agent-task create -F modul-4/aufgabenkarten/C1-vw-4711.md --follow
 gh agent-task list
-gh agent-task view <id>
+gh agent-task view TASK-ID
 ```
 
 `-F` liest die Beschreibung aus einer Datei. Ohne `-F` geht auch Fließtext direkt:
@@ -1006,8 +1006,13 @@ Verteidigungslinie — selbst ein übernommener Agent kann nur kommentieren.
 ### Ausprobieren, ohne etwas anzurichten
 
 ```bash
-gh aw trial ./.github/workflows/doku-drift.md --clone-repo <org>/<repo> --delete-host-repo-after
+gh aw trial ./.github/workflows/doku-drift.md --delete-host-repo-after
 ```
+
+**Ohne weitere Flags genügt das.** `trial` legt dann selbst ein temporäres Repo an und
+tut so, als liefe der Workflow gegen euer aktuelles. Wer zusätzlich die echten Dateien
+darin haben will, hängt `--clone-repo owner/repo` an — für diese Übung braucht ihr das
+nicht.
 
 Trial läuft gegen ein **simuliertes** Repository: keine echten Issues, keine echten PRs
 im Zielrepo. **Das ist der richtige Weg für den ersten Lauf.**
@@ -1040,7 +1045,7 @@ git push
 gh aw status
 gh aw run doku-drift
 gh aw logs doku-drift
-gh aw audit <run-id> --parse
+gh aw audit RUN-ID --parse
 ```
 
 ### Das Sicherheitsmodell — warum das Ganze überhaupt vertretbar ist
