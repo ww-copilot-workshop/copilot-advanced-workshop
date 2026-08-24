@@ -277,6 +277,113 @@ Berechnung bleibt unangetastet*. Ohne den baut der Agent auch die Berechnung um.
 
 </details>
 
+<details>
+<summary>🚨 <b>Musterlösung</b> — nur im Notfall aufklappen</summary>
+
+**Ernsthaft: erst wenn ihr feststeckt.** Wer hier zuerst hineinschaut, bekommt eine
+fertige Karte und nimmt nichts mit. Der Wert dieser Übung liegt im Streit darüber, was
+fehlt — nicht im Ergebnis.
+
+---
+
+**Die schlechte Karte ist `C1-vw-4714.md`.**
+
+Sie hat als einzige keine Abnahmekriterien, keine betroffenen Pfade und keinen
+Testbefehl. Sie fällt in zwei der vier Kategorien:
+
+* **Breit und komplex** — sie bündelt vier verschiedene Aufträge: modernisieren,
+  auf Java 21 heben, Performance verbessern, Tests nachziehen.
+* **Mehrdeutig** — „muss mal aufgeräumt werden", „da geht bestimmt einiges",
+  „könnte besser sein". Keine dieser Aussagen ist prüfbar.
+
+**Der Widerspruch:** *„Wichtig ist, dass sich am Verhalten nichts ändert"* steht
+neben *„die Tests fehlen ja auch komplett"*. Man kann nicht belegen, dass sich
+Verhalten nicht geändert hat, wenn nichts existiert, das es prüft. Der Agent würde
+das nicht bemerken — er würde loslegen und hinterher behaupten, alles sei gleich
+geblieben.
+
+**Nicht delegierbar ist:** herauszufinden, was der Code überhaupt tun *soll*. Der
+Satz „der Kollege ist nicht mehr im Unternehmen" beschreibt fehlendes Wissen, und
+fehlendes Wissen kann man nicht delegieren — man kann es nur erarbeiten. Das ist
+eine Lernaufgabe für euch, keine Aufgabe für den Agenten.
+
+---
+
+**Die Reparatur beginnt mit dem Teilen.** Aus einer Karte werden drei:
+
+| | Ticket | delegierbar? |
+|---|---|---|
+| 1 | `Calendar` durch `java.time` ersetzen | **ja** — unten ausgeschrieben |
+| 2 | Testabdeckung für den Abrechnungskern aufbauen | nein, erst muss die Vorgabe stehen |
+| 3 | Performance messen, dann entscheiden | nein, „könnte besser sein" ist kein Ziel |
+
+Ticket 2 und 3 bleiben bewusst offen: Ticket 2 setzt voraus, dass jemand die
+fachliche Vorgabe kennt. Ticket 3 setzt voraus, dass jemand gemessen hat. Beides
+ist Arbeit *vor* der Delegation.
+
+**Ticket 1, ausgeschrieben:**
+
+````markdown
+# VW-4714a — Nachttarif-Erkennung von Calendar auf java.time umstellen
+
+## Ziel
+
+Die Ermittlung der Stunde für den Nachttarif benutzt `java.time` statt
+`java.util.Calendar`. Am berechneten Ergebnis ändert sich nichts.
+
+## Hintergrund
+
+`AbrechnungsService` ist die einzige Stelle im Repo, die noch `Calendar`
+benutzt. `AGENTS.md` §3.3 schreibt `java.time` vor. Die Umstellung ist
+klein und in sich abgeschlossen — sie eignet sich als erster Schritt,
+bevor größere Umbauten anstehen.
+
+## Fachliche Vorgabe
+
+Die Regeln zum Nachttarif stehen in `modul-5/SPEC.md` und ändern sich
+nicht. Dieses Ticket ändert **nur, womit** die Stunde ermittelt wird,
+nicht **welche** Stunde gilt. Die Zeitzone bleibt dieselbe wie bisher.
+
+## Abnahmekriterien
+
+- [ ] `java.util.Calendar` kommt in `AbrechnungsService.java` nicht mehr vor.
+- [ ] Der Import ist entfernt.
+- [ ] Die Zeitzone wird weiterhin explizit gesetzt, nicht aus der
+      Systemzeitzone abgeleitet.
+- [ ] Alle bestehenden Tests laufen unverändert grün. Kein Test wird
+      angepasst — wird einer rot, ist das ein Befund und gehört in den PR,
+      nicht in eine Anpassung.
+- [ ] Es wird nichts anderes geändert: keine Tarifsätze, keine Rundung,
+      keine Struktur der Methode.
+
+## Betroffene Pfade
+
+* `modul-5/src/main/java/de/voltwerk/abrechnung/AbrechnungsService.java`
+
+## Testbefehl
+
+```bash
+mvn -q -pl modul-5 -am test
+```
+
+## Hinweise
+
+* Die Konventionen aus `AGENTS.md` gelten, insbesondere §3.3, der
+  `Calendar` ausdrücklich als Migrationskandidaten führt.
+* **Die Zeitzone steht hier nicht zur Debatte.** Ob die aktuell gesetzte
+  Zone fachlich die richtige ist, ist eine andere Frage mit einem anderen
+  Ticket. Wer sie in diesem Ticket mitändert, ändert Verhalten — und genau
+  das soll hier nicht passieren.
+* Dieses Ticket ist bewusst klein. Der große Umbau hat ein eigenes Ticket
+  und wartet auf die Testabdeckung.
+````
+
+**Warum das jetzt delegierbar ist:** Ein Ziel statt vier. Eine prüfbare Bedingung
+(`Calendar` kommt nicht mehr vor). Eine klare Grenze (nichts anderes anfassen). Und
+ein Testbefehl, mit dem der Agent selbst merkt, ob er fertig ist.
+
+</details>
+
 ### Was ihr NICHT delegiert
 
 Vier Kategorien, die GitHub ausdrücklich als ungeeignet dokumentiert:
