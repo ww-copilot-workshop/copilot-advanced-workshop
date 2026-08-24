@@ -415,7 +415,9 @@ Auffälligkeit bemerkt: nicht anfassen, sondern im PR als Befund notieren.
       Ergebnis wie vorher.
 - [ ] Nötige `java.time`-Imports dürfen dazukommen. `java.util.Date` und
       `java.util.TimeZone` bleiben.
-- [ ] Alle bestehenden Tests laufen unverändert grün. Kein Test wird angepasst.
+- [ ] Alle bestehenden Tests laufen unverändert grün. Es werden **weder Tests
+      angepasst noch neue hinzugefügt** — die Testabdeckung hat ein eigenes
+      Ticket und braucht erst eine fachliche Vorgabe.
 
 ## Nicht Teil dieses Tickets
 
