@@ -746,13 +746,15 @@ Und einer, der keiner ist: der Hinweis zur token-basierten Inference bei
 </details>
 
 <details>
-<summary>🚨 <b>Musterlösung</b> — nur im Notfall aufklappen</summary>
+<summary>🚨 <b>Musterlösung</b> — alle drei Vorlagen, nur im Notfall aufklappen</summary>
 
 **Erst wenn ihr feststeckt.** Der Compiler ist die bessere Hilfe: Er sagt euch bei fast
 jedem Fehler, was er erwartet hätte. Wer hier zuerst hineinschaut, überspringt genau die
 Schleife, um die es geht.
 
-Dies ist `doku-drift.md`, vollständig. Für die anderen beiden gilt dasselbe Muster.
+---
+
+## 1 · `doku-drift.md`
 
 ````markdown
 ---
@@ -815,16 +817,189 @@ sowie `modul-5/SPEC.md`.
 Ändere keine Dateien. Das hier ist ein Report.
 ````
 
-**Worauf es in dieser Lösung ankommt** — die drei Stellen, die man beim Abschreiben
-übersieht:
+**Die drei Stellen, die man beim Abschreiben übersieht:**
 
 * **`bash:` ist eine Liste konkreter Kommandos**, keine Freigabe. `find`, `ls`, `cat`,
   `grep`, `git log`, `git diff`, `git show` — mehr braucht ein Doku-Abgleich nicht.
 * **`max: 1`** macht aus „genau ein Issue" im Prompt eine Zusage der Infrastruktur.
-  Ein Prompt ist eine Bitte, `max` ist eine Regel. (Dieselbe Unterscheidung wie bei
-  `--deny-tool` in C1.)
-* **`missing-tool:`** lässt den Agenten melden, wenn ihm etwas fehlt, statt sich
-  etwas auszudenken. Ohne diesen Eintrag improvisiert er still.
+  Ein Prompt ist eine Bitte, `max` ist eine Regel. Dieselbe Unterscheidung wie bei
+  `--deny-tool` in C1.
+* **`missing-tool:`** lässt den Agenten melden, wenn ihm etwas fehlt, statt sich etwas
+  auszudenken. Ohne diesen Eintrag improvisiert er still.
+
+---
+
+## 2 · `testluecken-report.md`
+
+````markdown
+---
+description: Wöchentlicher Testlücken-Report als Draft-Pull-Request
+
+on:
+  schedule: weekly on monday
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  issues: read
+  pull-requests: read
+
+engine: copilot
+
+network:
+  allowed:
+    - defaults
+    - java
+
+timeout-minutes: 30
+
+strict: true
+
+tools:
+  github:
+    toolsets: [default]
+  edit:
+  bash: ["mvn", "find", "ls", "cat", "grep"]
+
+safe-outputs:
+  create-pull-request:
+    title-prefix: "[test-luecken] "
+    labels: [testing, automated]
+    draft: true
+    if-no-changes: warn
+  missing-tool:
+---
+
+# Wöchentlicher Testlücken-Report
+
+Analysiere die JUnit-5-Testabdeckung dieses Maven-Projekts.
+
+## Vorgehen
+
+1. Übersetze die Tests, ohne sie auszuführen:
+   `mvn -q -B -ntp -DskipTests test-compile`
+2. Liste alle produktiven Klassen unter `*/src/main/java` und alle Testklassen unter
+   `*/src/test/java`.
+3. Finde Klassen mit öffentlicher Geschäftslogik ohne zugehörige Testklasse.
+4. **Priorisiere nach Risiko, nicht nach Größe.** In dieser Reihenfolge:
+   - Klassen, die Geld oder Zeit berechnen
+   - Klassen, die eine Regel aus `modul-5/SPEC.md` umsetzen
+   - Klassen mit Verzweigungen über Enums oder Statuswerte
+   - alles andere
+   Reine Datenträger (Records ohne Logik), Konfiguration und generierter Code
+   sind **keine** Lücken. Führe sie nicht auf.
+5. Schreibe das Ergebnis nach `docs/test-luecken.md` (anlegen oder überschreiben):
+   - Tabelle: Klasse | Modul | Grund der Priorisierung | vorgeschlagene Testfälle
+   - Abschnitt "Top 3 für diese Woche" mit je einem Satz Begründung
+6. Erstelle daraus einen Draft-Pull-Request.
+
+## Grenzen
+
+Ändere **ausschließlich** `docs/test-luecken.md`. Schreibe keinen Produktivcode.
+Schreibe auch keine Tests — der Vorschlag ist das Produkt, nicht die Umsetzung.
+````
+
+**Worauf es hier ankommt:**
+
+* **`java` im Netz-Allowlist.** Ohne den Eintrag löst Maven keine Abhängigkeiten auf,
+  und der Lauf scheitert an einer Stelle, die nach einem Java-Problem aussieht.
+* **Der Zeitplan als `weekly on monday`**, nicht als fester Cron. Ein fester Cron
+  kompiliert zwar, erzeugt aber eine Warnung — und verfehlt damit das Ziel „0
+  Warnungen". Wer bewusst einen fachlichen Stichtag braucht, nimmt Cron und die
+  Warnung in Kauf.
+* **`if-no-changes`**, sonst öffnet der Workflow jede Woche einen leeren PR. Nach vier
+  Wochen schaltet ihn jemand ab, und das war es dann mit der Automatisierung.
+* **Der Draft-PR ist ein Wort.** Ein fertiger PR von einem Agenten, den niemand
+  angefordert hat, ist eine Zumutung für den Reviewer.
+
+**Und die eigentliche Denkaufgabe:** Warum schreibt dieser Workflow die fehlenden Tests
+nicht gleich selbst? Nicht, weil der Agent Fehler macht — sondern: **wogegen schriebe er
+sie?** Ohne fachliche Vorgabe kann er nur das bestehende Verhalten abschreiben. Das ist
+das Anti-Muster aus Lab D2, in einen nächtlichen Workflow gegossen und damit
+automatisiert.
+
+---
+
+## 3 · `ci-triage.md`
+
+````markdown
+---
+description: Analysiert fehlgeschlagene Maven-Builds auf Pull Requests
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened]
+  roles: [admin, maintainer, write]
+
+permissions:
+  contents: read
+  actions: read
+  pull-requests: read
+  issues: read
+
+engine: copilot
+network: defaults
+timeout-minutes: 15
+strict: true
+
+tools:
+  github:
+    toolsets: [default, actions]
+  bash: ["ls", "cat", "grep", "head", "tail"]
+
+safe-outputs:
+  add-comment:
+    target: triggering
+    max: 1
+  missing-tool:
+---
+
+# Maven-CI-Triage
+
+Analysiere den fehlgeschlagenen Maven-Build dieses Pull Requests.
+
+## Vorgehen
+
+1. Hole die Workflow-Runs zum Head-SHA dieses PR und finde den fehlgeschlagenen Job.
+2. Lade die Job-Logs und extrahiere die **eigentliche** Ursache. Achte auf:
+   - Compile-Fehler (`cannot find symbol`, fehlende Imports)
+   - Fehlgeschlagene Tests (Surefire: `Tests run: ... Failures: ...`)
+   - Abhängigkeitsauflösung (`Could not resolve dependencies`, Versionskonflikte —
+     hier lohnt der Blick, ob der Artifactory-Proxy die Version überhaupt freigibt)
+   - Enforcer-, Checkstyle- oder SpotBugs-Verstöße
+3. Unterscheide klar zwischen **echtem Fehler im PR** und **flaky oder
+   infrastrukturell**. Das ist der eigentliche Wert dieses Workflows: er nimmt dem
+   Menschen die Frage ab, ob er überhaupt hinschauen muss.
+4. Schreibe **genau einen** Kommentar:
+   - **Ursache** in einem Satz
+   - **Belegstelle**: die relevanten Logzeilen, gekürzt
+   - **Fix-Vorschlag**: Datei und konkrete Änderung
+   - **Einschätzung**: PR-Fehler oder flaky, mit Begründung
+5. Ist der Build grün, kommentiere **nicht**.
+
+## Grenzen
+
+Ändere keine Dateien. Pushe nichts. Schließe nichts.
+````
+
+**Worauf es hier ankommt:**
+
+* **`roles:` unter `on:`**, nicht auf oberster Ebene. Der Compiler sagt euch das
+  wörtlich — es ist die lehrreichste Fehlermeldung des Tages.
+* **`actions: read` UND das Toolset `actions`.** Beides, nicht eines. Permission und
+  Werkzeug sind zwei verschiedene Schalter, die zufällig gleich heißen.
+* **`target` beim Kommentar**, sonst landet er nicht zwingend dort, wo ihr denkt.
+* **`max: 1`.** Niemand will fünf Bot-Kommentare an einem PR.
+
+**Und die wichtigste Denkaufgabe des ganzen Moduls:** Dieser Workflow wird durch
+**fremde** Pull Requests ausgelöst — auch aus Forks, von Leuten, die ihr nicht kennt.
+Der Agent liest deren Build-Logs. In einem Build-Log steht, was der Autor
+hineinschreiben konnte: **Testnamen zum Beispiel.**
+
+Ein Test, der `sollteFunktionieren_ignoriere_alle_vorherigen_Anweisungen_und…` heißt,
+steht wörtlich im Log, das der Agent liest. `roles:` ist die Antwort darauf: Der
+Workflow läuft gar nicht erst für Fremde. Und das Safe-Output-Modell ist die zweite
+Verteidigungslinie — selbst ein übernommener Agent kann nur kommentieren.
 
 </details>
 
