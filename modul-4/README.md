@@ -95,8 +95,14 @@ Findet heraus, welche.
 2. Einigt euch, welche Karte die schlechte ist, und **schreibt sie um**, bis sie die
    Kriterien erfüllt.
 
-   Speichert sie **neben dem Original**, mit `-repariert` vor der Endung. Aus
-   `C1-vw-4711.md` würde also `C1-vw-4711-repariert.md`.
+   **Ihr dürft sie dabei aufteilen.** Wenn eine Karte vier Aufträge bündelt, ist das
+   Zerlegen oft schon die halbe Reparatur — und die ehrlichste Antwort auf die Frage,
+   was daran nicht delegierbar ist.
+
+   Alles kommt trotzdem in **eine Datei**: neben dem Original, mit `-repariert` vor
+   der Endung. Aus `C1-vw-4711.md` würde also `C1-vw-4711-repariert.md`. Wenn ihr
+   teilt, stehen die Teil-Tickets untereinander in dieser einen Datei — nummeriert
+   sie dann wie im Betrieb üblich, etwa `VW-4711a`, `VW-4711b`.
 
    > **Von Hand schreiben, nicht von Copilot schreiben lassen.** Der Grund steht ein
    > paar Zeilen weiter unten in der Liste „Was ihr NICHT delegiert": Das hier ist
@@ -321,7 +327,10 @@ Ticket 2 und 3 bleiben bewusst offen: Ticket 2 setzt voraus, dass jemand die
 fachliche Vorgabe kennt. Ticket 3 setzt voraus, dass jemand gemessen hat. Beides
 ist Arbeit *vor* der Delegation.
 
-**Ticket 1, ausgeschrieben:**
+**Ticket 1, ausgeschrieben.** Alle drei gehören untereinander in *eine* Datei,
+`C1-vw-4714-repariert.md`. Die Buchstaben hinter der Nummer zeigen, dass sie aus
+demselben ursprünglichen Ticket stammen — so macht man das auch im Betrieb, wenn ein
+Ticket beim Verfeinern zerfällt.
 
 ````markdown
 # VW-4714a — Nachttarif-Erkennung von Calendar auf java.time umstellen
