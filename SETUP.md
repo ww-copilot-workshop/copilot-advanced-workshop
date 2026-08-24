@@ -141,8 +141,10 @@ cd copilot-advanced-workshop
 mvn -q test
 ```
 
-**Erwartet:** `BUILD SUCCESS`, **neun Tests übersprungen**. Das ist Absicht — die
-gehören zu Übung A1 und sind dort mit `@Disabled` abgeschaltet.
+**Erwartet:** Exit-Code `0` (bei `-q` gibt es bei Erfolg keine sichtbare Ausgabe).
+Wer die Zusammenfassung sehen will, lässt `-q` weg (`mvn test`) und sieht dann
+`BUILD SUCCESS` sowie **neun Tests übersprungen**. Das ist Absicht — die gehören zu
+Übung A1 und sind dort mit `@Disabled` abgeschaltet.
 
 Legt euch gleich einen Arbeitsbranch an:
 
