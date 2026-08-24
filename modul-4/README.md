@@ -146,6 +146,137 @@ handfester Widerspruch — und der Agent würde ihn nicht bemerken, sondern rate
 könnt und in einem Satz sagen könnt, welcher Teil der ursprünglichen Karte **gar
 nicht** delegierbar ist — und warum nicht.
 
+### Woher wisst ihr, was in ein Ticket gehört?
+
+**Aus den drei guten Karten.** Die sind nicht nur Beispiele, sie sind die Vorlage. Legt
+eine davon neben eure Reparatur und geht die Abschnitte durch. Wenn ein Abschnitt bei
+euch fehlt, fehlt er dem Agenten auch.
+
+Die Faustregel dahinter: **Ein delegierbares Ticket beantwortet drei Fragen, ohne dass
+jemand nachfragen muss.** Was soll anders sein? Woran erkenne ich, dass es stimmt? Wo
+muss ich hinschauen?
+
+<details>
+<summary><b>Vorlage zum Kopieren</b> — die Struktur, die alle guten Karten teilen</summary>
+
+````markdown
+# VW-XXXX — <ein Satz, der das Problem benennt, nicht die Lösung>
+
+## Ziel
+
+Was soll nach der Änderung anders sein? Ein bis zwei Sätze, im Präsens,
+aus fachlicher Sicht. Keine Technik.
+
+## Hintergrund
+
+Warum fällt das jetzt auf? Wer hat es gemerkt, was hat es gekostet?
+Zahlen und Beispiele helfen mehr als Adjektive.
+
+## Fachliche Vorgabe
+
+Die Regel, die gelten soll — und woher sie kommt. Verweist auf die Quelle
+(Spezifikation, Ticket, Beschluss), nicht auf den bestehenden Code.
+Der Code ist das, was repariert wird; er kann nicht die Vorgabe sein.
+
+## Abnahmekriterien
+
+- [ ] Prüfbare Aussagen, keine Absichten. "Der Deckel greift" ist prüfbar,
+      "die Abrechnung ist korrekt" nicht.
+- [ ] Sagt ausdrücklich, ob Tests dazugehören — und woraus sie hergeleitet
+      werden sollen.
+- [ ] Nennt die Grenze: Was wird NICHT geändert? Das verhindert, dass der
+      Agent das halbe Modul umbaut.
+- [ ] Ein Kriterium, das den fertigen Zustand beschreibt (z. B. Build grün).
+
+## Betroffene Pfade
+
+* Die Dateien oder Verzeichnisse, in denen die Änderung stattfindet.
+* Lieber zu genau als zu grob.
+
+## Testbefehl
+
+```bash
+<der Befehl, mit dem man das Ergebnis prüft>
+```
+
+## Hinweise
+
+Alles, was ein neuer Kollege wissen müsste. Bekannte Fallen, verwandte
+Tickets, Konventionen, die gelten.
+````
+
+</details>
+
+<details>
+<summary><b>Ein durchgerechnetes Beispiel</b> — dasselbe Ticket vorher und nachher</summary>
+
+Bewusst **nicht** eine der vier Karten, damit die Aufgabe eine Aufgabe bleibt.
+
+**Vorher — so kam es rein:**
+
+````markdown
+# VW-4699 — Export ist zu langsam
+
+Der CSV-Export dauert ewig, die Kollegen beschweren sich.
+Bitte optimieren, sollte danach deutlich schneller sein.
+Priorität: hoch
+````
+
+Drei Fragen bleiben offen: *Wie langsam ist ewig? Wie schnell ist schnell genug?
+Welcher Export?* Der Agent würde alle drei raten.
+
+**Nachher — so ist es delegierbar:**
+
+````markdown
+# VW-4699 — CSV-Export der Monatsabrechnung braucht über 90 Sekunden
+
+## Ziel
+
+Der Monatsexport für einen Ladepark mit 5.000 Sitzungen läuft in unter
+10 Sekunden durch. Heute sind es 90 bis 120.
+
+## Hintergrund
+
+Die Abrechnung wird zum Monatsersten für 40 Parks erzeugt. Bei 90 Sekunden
+je Park läuft der Job über eine Stunde und kollidiert mit dem Backup-Fenster.
+Gemessen am 01.07. mit Park BW-Stuttgart-Nord: 112 Sekunden für 5.214 Sitzungen.
+
+## Fachliche Vorgabe
+
+Am Format der Ausgabe ändert sich nichts. Die exportierte Datei muss vor und
+nach der Änderung Byte für Byte identisch sein.
+
+## Abnahmekriterien
+
+- [ ] Ein Export mit 5.000 Sitzungen läuft in unter 10 Sekunden.
+- [ ] Ein Test vergleicht die Ausgabe vor und nach der Änderung auf Gleichheit;
+      die Referenzdatei liegt unter `src/test/resources/export-referenz.csv`.
+- [ ] Es wird nur der Export geändert. Die Berechnung bleibt unangetastet.
+- [ ] `mvn -q test` läuft grün.
+
+## Betroffene Pfade
+
+* `src/main/java/de/voltwerk/export/CsvExporter.java`
+* `src/test/java/de/voltwerk/export/`
+
+## Testbefehl
+
+```bash
+mvn -q -pl modul-5 -am test
+```
+
+## Hinweise
+
+* Die Konventionen aus `AGENTS.md` gelten.
+* Der Export wird auch vom Nightly-Job benutzt, siehe `.github/workflows/`.
+````
+
+Was sich geändert hat: aus „zu langsam" wurde **eine Zahl**, aus „optimieren" wurde
+**ein prüfbares Ziel**, und dazugekommen ist der Satz, der die Grenze zieht — *die
+Berechnung bleibt unangetastet*. Ohne den baut der Agent auch die Berechnung um.
+
+</details>
+
 ### Was ihr NICHT delegiert
 
 Vier Kategorien, die GitHub ausdrücklich als ungeeignet dokumentiert:
