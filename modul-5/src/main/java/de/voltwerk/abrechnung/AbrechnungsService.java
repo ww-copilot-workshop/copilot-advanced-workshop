@@ -1,7 +1,6 @@
 package de.voltwerk.abrechnung;
 
 import java.math.BigDecimal;
-import java.util.Calendar;
 import java.util.Date;
 import java.util.TimeZone;
 
@@ -115,9 +114,9 @@ public class AbrechnungsService {
         if (zeitpunkt == null) {
             return false;
         }
-        Calendar cal = Calendar.getInstance(RECHEN_ZONE);
-        cal.setTime(zeitpunkt);
-        int stunde = cal.get(Calendar.HOUR_OF_DAY);
+        int stunde = zeitpunkt.toInstant()
+                .atZone(RECHEN_ZONE.toZoneId())
+                .getHour();
         return stunde >= 22 || stunde < 6;
     }
 
