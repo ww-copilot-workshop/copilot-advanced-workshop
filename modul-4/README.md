@@ -83,7 +83,7 @@ Findet heraus, welche.
 | `C1-vw-4711.md` | Blockiergebühr deckeln |
 | `C1-vw-4712.md` | Fehlversuch-Regel korrigieren |
 | `C1-vw-4713.md` | Telemetrie-Export absichern |
-| `C1-vw-4714.md` | „Abrechnung modernisieren" |
+| `C1-vw-4714.md` | Abrechnung modernisieren |
 
 **Auftrag**
 
@@ -93,7 +93,10 @@ Findet heraus, welche.
      Gehören Tests dazu?
    * Hinweise, welche Dateien betroffen sind
 2. Einigt euch, welche Karte die schlechte ist, und **schreibt sie um**, bis sie die
-   Kriterien erfüllt. Ablegen als `modul-4/aufgabenkarten/C1-vw-4714-repariert.md`.
+   Kriterien erfüllt.
+
+   Speichert sie **neben dem Original**, mit `-repariert` vor der Endung. Aus
+   `C1-vw-4711.md` würde also `C1-vw-4711-repariert.md`.
 
    > **Von Hand schreiben, nicht von Copilot schreiben lassen.** Der Grund steht ein
    > paar Zeilen weiter unten in der Liste „Was ihr NICHT delegiert": Das hier ist
@@ -109,7 +112,7 @@ Findet heraus, welche.
    schreiben:
 
    ```bash
-   copilot -p "Lies modul-4/aufgabenkarten/C1-vw-4714-repariert.md. Nenne mir NUR die \
+   copilot -p "Lies modul-4/aufgabenkarten/<eure-reparierte-karte>.md. Nenne mir NUR die \
    Fragen, die du stellen müsstest, bevor du diesen Auftrag umsetzen könntest. Ändere nichts." \
      --deny-tool 'write'
    ```
@@ -135,8 +138,13 @@ Findet heraus, welche.
 **Denkt daran:** Ein Issue, das ihr dem Agenten zuweist, ist ein **Prompt**. Lest eure
 Karte noch einmal mit dieser Brille. Würdet ihr sie so in ein Chatfenster tippen?
 
-**Fertig, wenn** `C1-vw-4714-repariert.md` existiert und ihr in einem Satz sagen könnt,
-welcher Teil der ursprünglichen Karte **gar nicht** delegierbar ist — und warum nicht.
+**Außerdem:** In der schlechten Karte stecken **zwei Sätze, die zusammen nicht
+erfüllbar sind**. Findet sie. Das ist kein Formulierungsproblem, sondern ein
+handfester Widerspruch — und der Agent würde ihn nicht bemerken, sondern raten.
+
+**Fertig, wenn** eure reparierte Karte im Ordner liegt, ihr den Widerspruch benennen
+könnt und in einem Satz sagen könnt, welcher Teil der ursprünglichen Karte **gar
+nicht** delegierbar ist — und warum nicht.
 
 ### Was ihr NICHT delegiert
 
@@ -151,7 +159,7 @@ Vier Kategorien, die GitHub ausdrücklich als ungeeignet dokumentiert:
 * **Lernaufgaben** — alles, wo *ihr* etwas verstehen wollt. Der Agent lernt für euch,
   und ihr habt nichts davon.
 
-Karte `C1-vw-4714.md` fällt in mindestens zwei dieser Kategorien. In welche?
+Die schlechte Karte fällt in mindestens **zwei** dieser Kategorien. In welche?
 
 ---
 
