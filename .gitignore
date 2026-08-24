@@ -61,4 +61,11 @@ modul-4/aufgabenkarten/*-repariert.md
 .github/workflows/doku-drift.*
 .github/workflows/testluecken-report.*
 .github/workflows/ci-triage.*
+
+# Auch das Geruest, das `gh aw init` anlegt. Die Teilnehmer fuehren den Befehl
+# selbst aus -- liegt das Ergebnis schon da, verhaelt er sich anders als
+# beschrieben, und in /mcp taucht ein Server auf, der nicht der aus Lab B ist.
 .github/aw/
+.github/agents/
+.github/skills/
+.github/mcp.json
