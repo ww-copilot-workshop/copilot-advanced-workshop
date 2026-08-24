@@ -134,11 +134,25 @@ Findet heraus, welche.
 4. **Die zweite Probe, maschinell.** Jetzt darf Copilot ran — aber nur fragen, nicht
    schreiben:
 
+   **Setzt euren echten Dateinamen ein**, bevor ihr das abschickt — `XXXX` ist die
+   Nummer eurer Karte. Der Befehl läuft aus der Repo-Wurzel:
+
    ```bash
-   copilot -p "Lies modul-4/aufgabenkarten/<eure-reparierte-karte>.md. Nenne mir NUR die \
+   copilot -p "Lies modul-4/aufgabenkarten/C1-vw-XXXX-repariert.md. Nenne mir NUR die \
    Fragen, die du stellen müsstest, bevor du diesen Auftrag umsetzen könntest. Ändere nichts." \
      --deny-tool 'write'
    ```
+
+   > **Wenn stattdessen `Permission denied` kommt**, samt Zeilen wie `Search (glob)` oder
+   > `List directory`: Dann steht der Platzhalter noch drin. Und jetzt schaut euch genau
+   > an, was der Agent in dem Moment getan hat — er hat **nicht** gemeldet, dass die
+   > Datei fehlt. Er hat angefangen, sie zu suchen. Im `-p`-Modus kann er dafür niemanden
+   > fragen, also bricht er ab. Hättet ihr ihm die Rechte gegeben, hätte er weitergesucht
+   > und irgendeine Datei genommen, die passend aussah.
+   >
+   > Das ist dasselbe Verhalten wie bei einer lückenhaften Aufgabenkarte: **Er fragt
+   > nicht nach, er füllt die Lücke selbst.** Nur seht ihr es hier, weil eine Berechtigung
+   > im Weg stand.
 
    **Jede Frage, die zurückkommt, ist eine Lücke in eurer Karte.** Nicht mehr und nicht
    weniger. Eine gute Karte erzeugt null bis zwei Rückfragen; kommen acht, habt ihr die
