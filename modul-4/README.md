@@ -483,38 +483,52 @@ funktionieren **grundverschieden**.
 
 ### Weg 1 — aus einer laufenden Session: `/delegate`
 
-Der Befehl nimmt **keinen Text entgegen.** Es gibt kein „`/delegate` mach dies und
-das". Was er tut, steht in seiner eigenen Beschreibung:
+`/delegate` übergibt die **laufende Session** an GitHub. Die CLI beschreibt es so:
 
 > *Send this session to GitHub and Copilot will create a PR.*
 
-**Die Session ist der Auftrag.** Alles, was ihr vorher in dieser Sitzung besprochen
-habt, wandert mit. Ihr baut also erst den Kontext auf und übergebt ihn dann:
+**Der Sitzungsverlauf ist der Auftrag.** Optional könnt ihr noch etwas mitgeben — die
+Eingabezeile zeigt `/delegate [prompt]` —, aber das ist ein Zusatz, kein Ersatz für
+den Kontext. Wer `/delegate` in einer frischen Session tippt, übergibt eine leere.
+
+**Genau das ist die Falle nach Schritt 4.** Der Prüfbefehl lief mit `copilot -p`, also
+nicht-interaktiv. Der Kontext, den ihr euch dort aufgebaut habt — Karte gelesen, Code
+gelesen, Fragen beantwortet — liegt in *dieser* Session, nicht in eurem Terminal. Wenn
+ihr jetzt einfach `copilot` startet, ist alles weg.
+
+Am Ende jedes `-p`-Laufs steht deshalb eine Zeile wie:
+
+```text
+Resume     copilot --resume=a0424c50-d18f-4e86-8f66-dad12311d0fd
+```
+
+Ihr steigt in genau diese Session ein — mit der ID, oder einfacher in die zuletzt
+benutzte:
+
+```bash
+copilot --continue
+```
+
+Und dann, mit dem Kontext von vorhin im Rücken:
 
 ```
-> Lies modul-4/aufgabenkarten/C1-vw-4711.md und fasse zusammen, was zu tun ist.
-
-  [Copilot liest die Karte und antwortet]
-
 > Was wirst du anfassen, und was ausdrücklich nicht?
 
-  [Jetzt seht ihr, ob er die Karte verstanden hat — und könnt nachschärfen]
-
-> Genau so. Setz es um.
+  [Antwort prüfen — das ist der Moment, der einen halbstündigen Fehllauf verhindert]
 
 > /delegate
 ```
 
-Optional mit einem Zielbranch:
+Optional mit Zielbranch oder Zusatzhinweis:
 
 ```
 /delegate --base entwicklung
+/delegate Halte dich strikt an die Abnahmekriterien, keine Zusatzarbeit.
 ```
 
 **Das ist der eigentliche Vorteil gegenüber einem Chatfenster:** Ihr könnt vorher
-prüfen, ob er es verstanden hat. Die Frage *„Was wirst du anfassen, und was nicht?"*
-kostet dreißig Sekunden und rettet einen halbstündigen Lauf. Ein Agent, der schon
-läuft, lässt sich nicht mehr nachjustieren — ihr könnt ihn nur abbrechen.
+prüfen, ob er es verstanden hat. Ein Agent, der schon läuft, lässt sich nicht mehr
+nachjustieren — ihr könnt ihn nur abbrechen.
 
 ### Weg 2 — direkt aus dem Terminal, ohne Session
 
