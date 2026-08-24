@@ -143,15 +143,23 @@ Findet heraus, welche.
      --deny-tool 'write'
    ```
 
-   > **Wenn stattdessen `Permission denied` kommt**, samt Zeilen wie `Search (glob)` oder
-   > `List directory`: Dann steht der Platzhalter noch drin. Und jetzt schaut euch genau
-   > an, was der Agent in dem Moment getan hat — er hat **nicht** gemeldet, dass die
-   > Datei fehlt. Er hat angefangen, sie zu suchen. Im `-p`-Modus kann er dafür niemanden
-   > fragen, also bricht er ab. Hättet ihr ihm die Rechte gegeben, hätte er weitergesucht
-   > und irgendeine Datei genommen, die passend aussah.
+   > **`Permission denied`, und der Agent fängt an zu suchen?** Dann findet er die
+   > Datei nicht. Zwei Ursachen, beide häufig:
    >
-   > Das ist dasselbe Verhalten wie bei einer lückenhaften Aufgabenkarte: **Er fragt
-   > nicht nach, er füllt die Lücke selbst.** Nur seht ihr es hier, weil eine Berechtigung
+   > * **Ihr steht im falschen Verzeichnis.** Der Pfad im Prompt ist relativ zu dem
+   >   Ordner, in dem ihr `copilot` gestartet habt. Startet aus der Repo-Wurzel.
+   > * **Die Datei liegt außerhalb.** Copilot liest nur innerhalb seines
+   >   Vertrauensbereichs. Eine Karte unter `/tmp` bekommt er nicht zu sehen, auch
+   >   mit absolutem Pfad nicht.
+   >
+   > Und jetzt schaut euch an, was er in dem Moment getan hat: Er hat **nicht**
+   > gemeldet, dass die Datei fehlt. Er hat angefangen, sie zu suchen — Glob, `ls`,
+   > Verzeichnislisten. Im `-p`-Modus kann er dafür niemanden fragen, also bricht er
+   > ab. Mit den Rechten hätte er weitergesucht und irgendeine Datei genommen, die
+   > passend aussah.
+   >
+   > Das ist dasselbe Verhalten wie bei einer lückenhaften Karte: **Er fragt nicht
+   > nach, er füllt die Lücke selbst.** Hier seht ihr es nur, weil eine Berechtigung
    > im Weg stand.
 
    **Jede Frage, die zurückkommt, ist eine Lücke in eurer Karte.** Nicht mehr und nicht
@@ -364,41 +372,53 @@ demselben ursprünglichen Ticket stammen — so macht man das auch im Betrieb, w
 Ticket beim Verfeinern zerfällt.
 
 ````markdown
-# VW-4714a — Nachttarif-Erkennung von Calendar auf java.time umstellen
+# VW-4714a — Calendar in istNachts durch java.time ersetzen
 
 ## Ziel
 
-Die Ermittlung der Stunde für den Nachttarif benutzt `java.time` statt
-`java.util.Calendar`. Am berechneten Ergebnis ändert sich nichts.
+Die Methode `istNachts(...)` in `AbrechnungsService` ermittelt die Stunde mit
+`java.time` statt mit `java.util.Calendar`. Sonst ändert sich nichts.
 
 ## Hintergrund
 
 `AbrechnungsService` ist die einzige Stelle im Repo, die noch `Calendar`
-benutzt. `AGENTS.md` §3.3 schreibt `java.time` vor. Die Umstellung ist
-klein und in sich abgeschlossen — sie eignet sich als erster Schritt,
-bevor größere Umbauten anstehen.
+benutzt. `AGENTS.md` §3.3 führt `Calendar` ausdrücklich als
+Migrationskandidaten. Die Umstellung ist klein und in sich abgeschlossen.
 
-## Fachliche Vorgabe
+## Art der Änderung
 
-Die Regeln zum Nachttarif stehen in `modul-5/SPEC.md` und ändern sich
-nicht. Dieses Ticket ändert **nur, womit** die Stunde ermittelt wird,
-nicht **welche** Stunde gilt. Die Zeitzone bleibt dieselbe wie bisher.
+**Das ist eine reine Typ-Migration, keine fachliche Änderung.** Die Regeln,
+wann Nacht ist, welche Zone gilt und wie gerundet wird, werden in diesem
+Ticket weder geändert noch geprüft. Wer beim Umbau eine fachliche
+Auffälligkeit bemerkt: nicht anfassen, sondern im PR als Befund notieren.
 
 ## Abnahmekriterien
 
-- [ ] `java.util.Calendar` kommt in `AbrechnungsService.java` nicht mehr vor.
-- [ ] Der Import ist entfernt.
-- [ ] Die Zeitzone wird weiterhin explizit gesetzt, nicht aus der
-      Systemzeitzone abgeleitet.
-- [ ] Alle bestehenden Tests laufen unverändert grün. Kein Test wird
-      angepasst — wird einer rot, ist das ein Befund und gehört in den PR,
-      nicht in eine Anpassung.
-- [ ] Es wird nichts anderes geändert: keine Tarifsätze, keine Rundung,
-      keine Struktur der Methode.
+- [ ] `java.util.Calendar` kommt in `AbrechnungsService.java` nicht mehr vor,
+      der Import ist entfernt.
+- [ ] Die Konstante `RECHEN_ZONE` bleibt **unverändert** — gleicher Name,
+      gleicher Typ, gleicher Wert. Sie wird innerhalb der Methode in die
+      java.time-Welt gebrückt, nicht umdeklariert.
+- [ ] Die Signatur `private boolean istNachts(Date zeitpunkt)` bleibt
+      unverändert. Das `Date` wird über `toInstant()` gebrückt.
+- [ ] Die Null-Prüfung am Methodenanfang bleibt Zeichen für Zeichen erhalten,
+      inklusive Rückgabewert.
+- [ ] Die Stundenberechnung liefert für jeden Eingabewert exakt dasselbe
+      Ergebnis wie vorher.
+- [ ] Nötige `java.time`-Imports dürfen dazukommen. `java.util.Date` und
+      `java.util.TimeZone` bleiben.
+- [ ] Alle bestehenden Tests laufen unverändert grün. Kein Test wird angepasst.
+
+## Nicht Teil dieses Tickets
+
+* Jede fachliche Frage: Zonen, Nachtfenster, Rundung, Tarife.
+* Das Domänenmodell.
+* Die mit `MODERNISIEREN` markierte Stelle in `berechne(...)`.
 
 ## Betroffene Pfade
 
-* `modul-5/src/main/java/de/voltwerk/abrechnung/AbrechnungsService.java`
+* `modul-5/src/main/java/de/voltwerk/abrechnung/AbrechnungsService.java`,
+  ausschließlich die Methode `istNachts(...)` und der Import-Block.
 
 ## Testbefehl
 
@@ -408,15 +428,18 @@ mvn -q -pl modul-5 -am test
 
 ## Hinweise
 
-* Die Konventionen aus `AGENTS.md` gelten, insbesondere §3.3, der
-  `Calendar` ausdrücklich als Migrationskandidaten führt.
-* **Die Zeitzone steht hier nicht zur Debatte.** Ob die aktuell gesetzte
-  Zone fachlich die richtige ist, ist eine andere Frage mit einem anderen
-  Ticket. Wer sie in diesem Ticket mitändert, ändert Verhalten — und genau
-  das soll hier nicht passieren.
-* Dieses Ticket ist bewusst klein. Der große Umbau hat ein eigenes Ticket
-  und wartet auf die Testabdeckung.
+* Die Konventionen aus `AGENTS.md` gelten, insbesondere §3.3.
+* Dieses Ticket ist bewusst klein.
 ````
+
+**Diese Karte ist mit dem Werkzeug aus Schritt 4 geprüft.** Das Urteil: „ungewöhnlich
+vollständig spezifiziert, keine echten fachlichen Lücken". Drei Rückfragen kamen
+trotzdem — aber es waren Bestätigungsfragen („ist diese Brücken-Mechanik gemeint?"),
+keine Lücken. Zwei davon hat der Agent selbst beantwortet.
+
+**Und das ist der Zustand, den ihr anstrebt.** Nicht null Fragen — ein Ticket, das
+auch die Umsetzungsidiome vorschreibt, schreibt den Code im Ticket. Sondern: keine
+Frage mehr, deren Antwort der Agent *raten* müsste.
 
 **Warum das jetzt delegierbar ist:** Ein Ziel statt vier. Eine prüfbare Bedingung
 (`Calendar` kommt nicht mehr vor). Eine klare Grenze (nichts anderes anfassen). Und
