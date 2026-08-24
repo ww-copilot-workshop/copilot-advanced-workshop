@@ -138,10 +138,18 @@ Findet heraus, welche.
    Nummer eurer Karte. Der Befehl läuft aus der Repo-Wurzel:
 
    ```bash
-   copilot -p "Lies modul-4/aufgabenkarten/C1-vw-XXXX-repariert.md. Nenne mir NUR die \
-   Fragen, die du stellen müsstest, bevor du diesen Auftrag umsetzen könntest. Ändere nichts." \
+   copilot -p "Lies modul-4/aufgabenkarten/C1-vw-XXXX-repariert.md. Du darfst zur \
+   Beurteilung in den Quellcode schauen. Nenne mir danach NUR die Fragen, die du zu \
+   DIESEM Auftrag stellen müsstest. Keine Anmerkungen, keine Randnotizen, keine \
+   Beobachtungen zu anderen Stellen im Code - ausschließlich die Fragen. Ändere nichts." \
      --deny-tool 'write'
    ```
+
+   Der Prompt ist absichtlich so pedantisch. Ohne den Satz *„du darfst in den Quellcode
+   schauen"* fragt der Agent Dinge, die im Code stehen — und ihr haltet das für eine
+   Lücke in eurer Karte, obwohl es keine ist. Ohne *„keine Randnotizen"* hängt er noch
+   drei Beobachtungen an, die mit eurem Ticket nichts zu tun haben. **Auch ein Prüfauftrag
+   ist ein Auftrag und wird genauso präzise wie ein Ticket.**
 
    > **`Permission denied`, und der Agent fängt an zu suchen?** Dann findet er die
    > Datei nicht. Zwei Ursachen, beide häufig:
@@ -432,10 +440,12 @@ mvn -q -pl modul-5 -am test
 * Dieses Ticket ist bewusst klein.
 ````
 
-**Diese Karte ist mit dem Werkzeug aus Schritt 4 geprüft.** Das Urteil: „ungewöhnlich
-vollständig spezifiziert, keine echten fachlichen Lücken". Drei Rückfragen kamen
-trotzdem — aber es waren Bestätigungsfragen („ist diese Brücken-Mechanik gemeint?"),
-keine Lücken. Zwei davon hat der Agent selbst beantwortet.
+**Diese Karte ist mit dem Werkzeug aus Schritt 4 geprüft**, und zwar mehrfach. Das
+Urteil zuletzt: *„Zu diesem Auftrag muss ich nichts klären."* Übrig blieb eine einzige
+Frage — ob ein bestimmtes Umsetzungsidiom gemeint ist.
+
+Zum Vergleich, dieselbe Prüfung an der Originalkarte: **acht Fragen.** Das ist die Zahl,
+um die es geht.
 
 **Und das ist der Zustand, den ihr anstrebt.** Nicht null Fragen — ein Ticket, das
 auch die Umsetzungsidiome vorschreibt, schreibt den Code im Ticket. Sondern: keine
