@@ -48,6 +48,10 @@ Ohne ihn antwortet die CLI auf `/sandbox` mit „Unknown command", und `-w` bric
 einer Fehlermeldung ab. **Das ist kein Fehler in eurer Installation.** Diese Befehle
 existieren nur im Experimental-Modus:
 
+> **Windows:** Der Schalter funktioniert bei euch genauso — nur die Sandbox selbst
+> (A3.2) lässt sich auf einem normalen Windows-Build nicht aktivieren. Details stehen
+> bei A3.
+
 | Nur experimentell | Was es tut |
 |---|---|
 | `/worktree [branch\|task]` | Legt einen Git-Worktree ab `HEAD` an und wechselt die Session hinein |
@@ -237,12 +241,20 @@ url(domain-or-url?) url(https://github.com)
 
 ## A3 — Die Leine spüren: URLs, Pfade, Sandbox
 
-**8 Minuten**
+**8 Minuten** — davon **A3.1 selbst (ca. 5 Min)** und **A3.2 als Demo vorne (ca. 3 Min)**
 
 Copilot hat drei Verteidigungslinien: Bestätigung pro Aktion, Pfad- und URL-Regeln,
 und — auf OS-Ebene — die Sandbox.
 
-**A3.1 URL-Grenzen (funktioniert immer)**
+> **A3.2 macht ihr nicht selbst — schaut zu.**
+> Die lokale Sandbox läuft laut GitHub-Doku nur auf macOS, Linux und
+> **Windows-Insider-Builds**. Auf einem normalen Windows-Rechner lässt sie sich nicht
+> aktivieren; das ist erwartet und kein Fehler bei euch.
+> Damit trotzdem jeder den Sandbox-Block einmal gesehen hat, führen wir A3.2 vorne
+> gemeinsam vor. Ihr schaut zu — **die Frage am Ende von A3.2 beantwortet ihr danach
+> selbst**, die braucht keine laufende Sandbox.
+
+**A3.1 URL-Grenzen — das macht ihr selbst (funktioniert auf jedem System)**
 
 ```bash
 copilot -p "Rufe https://api.github.com/zen ab und gib die Antwort aus." \
@@ -254,11 +266,15 @@ Beobachtet: Was meldet die CLI? Probiert dann dasselbe mit
 `--allow-url 'https://api.github.com'`. Und: URL-Regeln sind **protokoll-scharf** —
 `https://example.com` erlaubt **nicht** `http://example.com`. Testet das.
 
-**A3.2 Sandbox (experimentell)**
+**A3.2 Sandbox (experimentell) — Demo vorne, ihr schaut zu**
 
 Command Sandboxing basiert auf Microsoft Execution Containers; unter macOS über
 `sandbox-exec`, unter Linux über `bwrap` (bubblewrap 0.5.0+ muss auf dem PATH sein),
-unter Windows über ProcessContainer (Windows 11).
+unter Windows über ProcessContainer — und das gibt es derzeit **nur auf
+Windows-Insider-Builds**. Die Doku sagt wörtlich: *„Local sandboxing is available on
+macOS and Linux, and on Windows Insiders builds."*
+
+Die folgenden Befehle führt der Trainer vor. Lest sie mit, tippt sie nicht mit.
 
 ```bash
 copilot --experimental              # Sandbox-Befehle werden registriert
@@ -288,9 +304,10 @@ und danach:
 Schreibe die Datei modul-1/uebungen/A3-sandbox.md mit dem Inhalt "hallo".
 ```
 
-**Die Frage, um die es geht:** Was genau ist der Unterschied zwischen
-`--deny-tool 'shell(rm:*)'` und einer Sandbox-Policy? Formuliert eine Antwort in
-einem Satz und schreibt sie in `A3-sandbox.md`.
+**Die Frage, um die es geht — die beantwortet ihr selbst:** Was genau ist der
+Unterschied zwischen `--deny-tool 'shell(rm:*)'` und einer Sandbox-Policy? Formuliert
+eine Antwort in einem Satz und schreibt sie in `modul-1/uebungen/A3-sandbox.md`.
+Dafür braucht ihr keine laufende Sandbox — nur das, was ihr gerade gesehen habt.
 
 > Antwort-Hinweis für die Diskussion: Das eine ist eine Regel darüber, **was der Agent
 > vorschlagen darf**. Das andere ist eine Regel darüber, **was das Betriebssystem
