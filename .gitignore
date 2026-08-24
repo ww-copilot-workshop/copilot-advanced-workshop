@@ -48,3 +48,9 @@ modul-1/uebungen/.chaos/
 
 # macOS
 .DS_Store
+
+# Loesungen der Teilnehmer zu C1 gehoeren NICHT ins Repo. Die reparierten
+# Aufgabenkarten sind das Ergebnis der Uebung -- wer sie eincheckt, liefert
+# die Antwort an alle folgenden Gruppen mit.
+# (Ist beim Vorbereiten genau einmal passiert. Deshalb steht das hier.)
+modul-4/aufgabenkarten/*-repariert.md
