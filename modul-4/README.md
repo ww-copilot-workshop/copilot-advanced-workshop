@@ -94,9 +94,43 @@ Findet heraus, welche.
    * Hinweise, welche Dateien betroffen sind
 2. Einigt euch, welche Karte die schlechte ist, und **schreibt sie um**, bis sie die
    Kriterien erfüllt. Ablegen als `modul-4/aufgabenkarten/C1-vw-4714-repariert.md`.
-3. **Die Probe:** Lest eure reparierte Karte einem anderen Team vor — ohne Kontext.
-   Wenn Rückfragen kommen, kommen sie auch vom Agenten. Nur merkt der es nicht und
-   rät stattdessen.
+
+   > **Von Hand schreiben, nicht von Copilot schreiben lassen.** Der Grund steht ein
+   > paar Zeilen weiter unten in der Liste „Was ihr NICHT delegiert": Das hier ist
+   > eine **Lernaufgabe**. Wer sie delegiert, bekommt eine hübsche Karte und hat
+   > nichts verstanden — und verletzt genau das Muster, das er gerade lernen soll.
+   > Copilot kommt gleich dran, in Schritt 4, als Prüfer statt als Autor.
+
+3. **Die erste Probe, menschlich:** Lest eure reparierte Karte einem anderen Team vor —
+   ohne Kontext. Wenn Rückfragen kommen, kommen sie auch vom Agenten. Nur merkt der es
+   nicht und rät stattdessen.
+
+4. **Die zweite Probe, maschinell.** Jetzt darf Copilot ran — aber nur fragen, nicht
+   schreiben:
+
+   ```bash
+   copilot -p "Lies modul-4/aufgabenkarten/C1-vw-4714-repariert.md. Nenne mir NUR die \
+   Fragen, die du stellen müsstest, bevor du diesen Auftrag umsetzen könntest. Ändere nichts." \
+     --deny-tool 'write'
+   ```
+
+   **Jede Frage, die zurückkommt, ist eine Lücke in eurer Karte.** Nicht mehr und nicht
+   weniger. Eine gute Karte erzeugt null bis zwei Rückfragen; kommen acht, habt ihr die
+   Karte nicht repariert, sondern nur umformuliert.
+
+   Warum das `--deny-tool 'write'`, wo im Prompt doch „Ändere nichts" steht? Wir haben
+   beides ausprobiert: **Ohne Flag hat sich der Agent ebenfalls daran gehalten.** Der
+   Satz im Prompt ist trotzdem nur eine *Bitte*, das Flag ist eine *Regel*. Eine Bitte,
+   die zufällig befolgt wurde, ist keine Kontrolle — und genau das war die Lektion aus
+   Modul 1. Nehmt das Flag, nicht weil es diesmal nötig war, sondern weil ihr sonst
+   nicht wisst, ob es nötig gewesen wäre.
+
+   Beiläufig noch eine Zahl für Modul 3: Derselbe Lauf kostete beim ersten Mal
+   **21,2 Credits**, beim zweiten **12,7** — gleicher Auftrag, gleiche Datei. Der
+   Unterschied ist der Cache. Schaut es euch im Ausgabe-Fuß selbst an.
+
+   *Kür, wenn Zeit bleibt:* Lasst denselben Befehl auf das **Original** los und zählt.
+   Der Unterschied in der Zahl der Rückfragen ist euer Ergebnis, als Zahl.
 
 **Denkt daran:** Ein Issue, das ihr dem Agenten zuweist, ist ein **Prompt**. Lest eure
 Karte noch einmal mit dieser Brille. Würdet ihr sie so in ein Chatfenster tippen?
