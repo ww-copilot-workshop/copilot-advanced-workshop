@@ -26,8 +26,9 @@ Sekunden und ist der langweiligste Teil des Moduls. Interessant sind das Ticket 
 und das Gate danach — und beides macht ihr in jedem Fall selbst.
 
 > **Zur Zeit, ehrlich:** Angesetzt sind 60 Minuten, durchgespielt sind es eher 90.
-> Plant so: **C1, dann C3** — die Wartezeit auf den Agenten fällt in C3 hinein und ist
-> dadurch nicht verloren. C2 macht ihr, sobald der PR da ist.
+> Plant so: **C1, dann C3, dann C2.** Die Wartezeit auf den Agenten fällt in C3 hinein
+> und arbeitet damit für euch. C2 macht ihr, sobald der PR da ist. Was als Kür
+> markiert ist, ist Kür.
 
 ---
 
@@ -43,28 +44,6 @@ Der zentrale Unterschied: **Autopilot ist euer Rechner. `/delegate` ist Cloud.**
 `/delegate` legt Copilot einen Branch an, öffnet einen **Draft-PR**, arbeitet im
 Hintergrund weiter — auch wenn ihr euren Laptop zuklappt — und fordert am Ende ein
 Review an.
-
-```
-/autopilot Refactoriere die Tarif-Kaskade --max-ai-credits 5
-/delegate  Behebe VW-4711 wie in der Aufgabenkarte beschrieben
-```
-
-`/delegate --base <branch>` wählt den Ziel-Branch des PR.
-
-Aus dem Terminal geht dasselbe ohne Session:
-
-```bash
-gh agent-task create "Behebe VW-4711 ..." --follow
-gh agent-task create -F modul-4/aufgabenkarten/C1-vw-4711.md
-gh agent-task create -F modul-4/aufgabenkarten/C1-vw-4711.md --custom-agent abrechnungs-reviewer
-gh agent-task list
-gh agent-task view TASK-ID
-```
-
-`-F -` liest von stdin. `--custom-agent my-agent` benutzt `.github/agents/my-agent.md` —
-damit könnt ihr eure Rolle aus Lab B in die Cloud schicken.
-
-> `gh agent-task` gibt es ab gh 2.80.0 und ist Public Preview.
 
 ---
 
@@ -87,55 +66,37 @@ Findet heraus, welche.
 
 **Auftrag**
 
-1. Lest alle vier. Bewertet jede an den offiziellen Kriterien:
+1. **Lest alle vier.** Bewertet jede an den offiziellen Kriterien:
    * Klare Beschreibung des Problems oder der geforderten Arbeit
    * **Vollständige** Abnahmekriterien — woran erkennt man eine gute Lösung?
      Gehören Tests dazu?
    * Hinweise, welche Dateien betroffen sind
-2. Einigt euch, welche Karte die schlechte ist, und **schreibt sie um**, bis sie die
-   Kriterien erfüllt.
 
-   **Eine neue Datei, das Original bleibt liegen.** Hängt `-repariert` an den Namen.
-   Gelöscht wird nichts — ihr braucht das Original gleich noch für den Vergleich in
-   Schritt 4, und in der Auswertung wollt ihr beide nebeneinander legen können.
+2. **Einigt euch, welche Karte die schlechte ist, und schreibt sie um**, bis sie die
+   Kriterien erfüllt. Eine neue Datei, das Original bleibt liegen; hängt `-repariert`
+   an den Namen. Ihr braucht beide gleich noch für den Vergleich.
 
    ```text
    modul-4/aufgabenkarten/
-   ├── C1-vw-4711.md              ← Original, bleibt unverändert
-   └── C1-vw-4711-repariert.md    ← eure Fassung, neu
+   ├── C1-vw-XXXX.md              Original, bleibt unverändert
+   └── C1-vw-XXXX-repariert.md    eure Fassung, neu
    ```
 
-   **Ihr dürft die Karte dabei aufteilen.** Wenn eine Karte vier Aufträge bündelt, ist
-   das Zerlegen oft schon die halbe Reparatur — und die ehrlichste Antwort auf die
-   Frage, was daran nicht delegierbar ist.
+   `XXXX` ist die Nummer eurer Karte — die setzt ihr überall ein, wo sie hier steht.
 
-   Auch dann bleibt es bei **einer** Datei. Die Teil-Tickets stehen darin als
-   Überschriften untereinander:
-
-   ```text
-   C1-vw-4711-repariert.md
-   ├── # VW-4711a — <erstes Teil-Ticket>
-   ├── # VW-4711b — <zweites Teil-Ticket>
-   └── # VW-4711c — <drittes Teil-Ticket>
-   ```
-
-   `VW-4711a` ist also eine **Überschrift in der Datei**, kein zweiter Dateiname.
+   **Ihr dürft die Karte aufteilen.** Wenn eine Karte vier Aufträge bündelt, ist das
+   Zerlegen oft schon die halbe Reparatur — und die ehrlichste Antwort auf die Frage,
+   was daran nicht delegierbar ist. Es bleibt trotzdem **eine** Datei; die Teil-Tickets
+   stehen darin als Überschriften untereinander (`# VW-XXXXa …`, `# VW-XXXXb …`).
+   `VW-XXXXa` ist also eine Überschrift **in** der Datei, kein zweiter Dateiname.
 
    > **Von Hand schreiben, nicht von Copilot schreiben lassen.** Der Grund steht ein
-   > paar Zeilen weiter unten in der Liste „Was ihr NICHT delegiert": Das hier ist
-   > eine **Lernaufgabe**. Wer sie delegiert, bekommt eine hübsche Karte und hat
-   > nichts verstanden — und verletzt genau das Muster, das er gerade lernen soll.
-   > Copilot kommt gleich dran, in Schritt 4, als Prüfer statt als Autor.
+   > paar Zeilen weiter unten in der Liste „Was ihr NICHT delegiert": Das hier ist eine
+   > **Lernaufgabe**. Wer sie delegiert, bekommt eine hübsche Karte und hat nichts
+   > verstanden. Copilot kommt gleich dran, in Schritt 3, als Prüfer statt als Autor.
 
-3. **Die erste Probe, menschlich:** Lest eure reparierte Karte einem anderen Team vor —
-   ohne Kontext. Wenn Rückfragen kommen, kommen sie auch vom Agenten. Nur merkt der es
-   nicht und rät stattdessen.
-
-4. **Die zweite Probe, maschinell.** Jetzt darf Copilot ran — aber nur fragen, nicht
-   schreiben:
-
-   **Setzt euren echten Dateinamen ein**, bevor ihr das abschickt — `XXXX` ist die
-   Nummer eurer Karte. Der Befehl läuft aus der Repo-Wurzel:
+3. **Die Probe, maschinell.** Jetzt darf Copilot ran — aber nur fragen, nicht
+   schreiben. **Setzt euren echten Dateinamen ein**, und startet aus der Repo-Wurzel:
 
    ```bash
    copilot -p "Lies modul-4/aufgabenkarten/C1-vw-XXXX-repariert.md. Du darfst zur \
@@ -148,20 +109,24 @@ Findet heraus, welche.
    Der Prompt ist absichtlich so pedantisch. Ohne den Satz *„du darfst in den Quellcode
    schauen"* fragt der Agent Dinge, die im Code stehen — und ihr haltet das für eine
    Lücke in eurer Karte, obwohl es keine ist. Ohne *„keine Randnotizen"* hängt er noch
-   drei Beobachtungen an, die mit eurem Ticket nichts zu tun haben. **Auch ein Prüfauftrag
-   ist ein Auftrag und wird genauso präzise wie ein Ticket.**
+   drei Beobachtungen an, die mit eurem Ticket nichts zu tun haben. **Auch ein
+   Prüfauftrag ist ein Auftrag und wird genauso präzise wie ein Ticket.**
+
+   Und warum das `--deny-tool 'write'`, wo im Prompt doch „Ändere nichts" steht? Wir
+   haben beides ausprobiert: **Ohne Flag hat sich der Agent ebenfalls daran gehalten.**
+   Der Satz im Prompt ist trotzdem nur eine *Bitte*, das Flag ist eine *Regel*. Eine
+   Bitte, die zufällig befolgt wurde, ist keine Kontrolle — genau das war die Lektion
+   aus Modul 1. Nehmt das Flag, nicht weil es diesmal nötig war, sondern weil ihr sonst
+   nicht wisst, ob es nötig gewesen wäre.
 
    > **`Permission denied`, und der Agent fängt an zu suchen?** Dann findet er die
-   > Datei nicht. Zwei Ursachen, beide häufig:
-   >
-   > * **Ihr steht im falschen Verzeichnis.** Der Pfad im Prompt ist relativ zu dem
-   >   Ordner, in dem ihr `copilot` gestartet habt. Startet aus der Repo-Wurzel.
-   > * **Die Datei liegt außerhalb.** Copilot liest nur innerhalb seines
-   >   Vertrauensbereichs. Eine Karte unter `/tmp` bekommt er nicht zu sehen, auch
-   >   mit absolutem Pfad nicht.
+   > Datei nicht. Zwei Ursachen, beide häufig: Ihr steht im **falschen Verzeichnis**
+   > (der Pfad ist relativ zum Startordner — startet aus der Repo-Wurzel), oder die
+   > Datei liegt **außerhalb seines Vertrauensbereichs** (eine Karte unter `/tmp`
+   > bekommt er nicht zu sehen, auch mit absolutem Pfad nicht).
    >
    > Und jetzt schaut euch an, was er in dem Moment getan hat: Er hat **nicht**
-   > gemeldet, dass die Datei fehlt. Er hat angefangen, sie zu suchen — Glob, `ls`,
+   > gemeldet, dass die Datei fehlt. Er hat angefangen, sie zu **suchen** — Glob, `ls`,
    > Verzeichnislisten. Im `-p`-Modus kann er dafür niemanden fragen, also bricht er
    > ab. Mit den Rechten hätte er weitergesucht und irgendeine Datei genommen, die
    > passend aussah.
@@ -170,23 +135,43 @@ Findet heraus, welche.
    > nach, er füllt die Lücke selbst.** Hier seht ihr es nur, weil eine Berechtigung
    > im Weg stand.
 
-   **Jede Frage, die zurückkommt, ist eine Lücke in eurer Karte.** Nicht mehr und nicht
-   weniger. Eine gute Karte erzeugt null bis zwei Rückfragen; kommen acht, habt ihr die
-   Karte nicht repariert, sondern nur umformuliert.
-
-   Warum das `--deny-tool 'write'`, wo im Prompt doch „Ändere nichts" steht? Wir haben
-   beides ausprobiert: **Ohne Flag hat sich der Agent ebenfalls daran gehalten.** Der
-   Satz im Prompt ist trotzdem nur eine *Bitte*, das Flag ist eine *Regel*. Eine Bitte,
-   die zufällig befolgt wurde, ist keine Kontrolle — und genau das war die Lektion aus
-   Modul 1. Nehmt das Flag, nicht weil es diesmal nötig war, sondern weil ihr sonst
-   nicht wisst, ob es nötig gewesen wäre.
+   **Jede Frage, die zurückkommt, ist eine Lücke in eurer Karte.** Achtet dabei weniger
+   auf die Anzahl als auf die **Art**: Fragen zum *Idiom* („welche API soll ich
+   nehmen?") sind harmlos. Fragen zur *Absicht* („was soll überhaupt herauskommen?")
+   sind der Befund. Kommt auch nur eine davon zurück, ist die Karte noch nicht fertig.
 
    Beiläufig noch eine Zahl für Modul 3: Derselbe Lauf kostete beim ersten Mal
    **21,2 Credits**, beim zweiten **12,7** — gleicher Auftrag, gleiche Datei. Der
    Unterschied ist der Cache. Schaut es euch im Ausgabe-Fuß selbst an.
 
-   *Kür, wenn Zeit bleibt:* Lasst denselben Befehl auf das **Original** los und zählt.
-   Der Unterschied in der Zahl der Rückfragen ist euer Ergebnis, als Zahl.
+4. **Der letzte Handgriff: die Delegation.** Eine der **guten** Karten geht in die
+   Cloud — wie, steht im nächsten Abschnitt. In der Variante Demo macht das der
+   Trainer vorne.
+
+**Kür, wenn Zeit bleibt.** Zwei Proben, die den Unterschied in eine Zahl übersetzen:
+
+* **Menschlich:** Lest eure reparierte Karte einem anderen Team vor, ohne Kontext.
+  Wenn Rückfragen kommen, kommen sie auch vom Agenten. Nur merkt der es nicht und rät
+  stattdessen.
+* **Maschinell, gegen das Original:**
+
+  ```bash
+  copilot -p "Lies modul-4/aufgabenkarten/C1-vw-XXXX.md. Beurteile AUSSCHLIESSLICH \
+  diese Karte als Auftrag. Schau NICHT in den Quellcode und nicht in andere Dateien. \
+  Nenne mir NUR die Fragen, die du stellen müsstest, bevor du sie umsetzen könntest. \
+  Ändere nichts." \
+    --deny-tool 'write'
+  ```
+
+  > **Warum dieser Prompt anders ist als der aus Schritt 3** — und das ist kein
+  > Versehen: Eine reparierte Karte darf sich auf den Code stützen, deshalb bekommt
+  > der Agent dort Einblick. Das Original soll zeigen, was passiert, wenn eine Karte
+  > **allein tragen muss**. Gebt ihr ihm hier den Quellcode dazu, beurteilt er nicht
+  > mehr die Karte, sondern den Code — und nimmt damit Modul 5 vorweg.
+
+  Bei uns kamen **dreizehn bis vierzehn Fragen** zurück — die Zahl schwankt von Lauf
+  zu Lauf, die Größenordnung nicht. Eure reparierte Karte sollte deutlich darunter
+  liegen; wichtiger ist, dass keine der verbliebenen Fragen nach der **Absicht** fragt.
 
 **Denkt daran:** Ein Issue, das ihr dem Agenten zuweist, ist ein **Prompt**. Lest eure
 Karte noch einmal mit dieser Brille. Würdet ihr sie so in ein Chatfenster tippen?
@@ -201,137 +186,42 @@ nicht** delegierbar ist — und warum nicht.
 
 ### Woher wisst ihr, was in ein Ticket gehört?
 
-**Aus den drei guten Karten.** Die sind nicht nur Beispiele, sie sind die Vorlage. Legt
-eine davon neben eure Reparatur und geht die Abschnitte durch. Wenn ein Abschnitt bei
-euch fehlt, fehlt er dem Agenten auch.
+**Aus den drei guten Karten.** Sie sind nicht nur Beispiele, sie sind die Vorlage. Legt
+eine davon neben eure Reparatur und geht die Abschnitte durch: Ziel · Hintergrund ·
+fachliche Vorgabe · Abnahmekriterien · betroffene Pfade · Testbefehl · Hinweise. Fehlt
+ein Abschnitt bei euch, fehlt er dem Agenten auch. Nach der Reparatur lohnen zwei
+weitere Rubriken besonders: **Art der Änderung** und **Nicht Teil dieses Tickets**.
 
-Die Faustregel dahinter: **Ein delegierbares Ticket beantwortet drei Fragen, ohne dass
-jemand nachfragen muss.** Was soll anders sein? Woran erkenne ich, dass es stimmt? Wo
-muss ich hinschauen?
-
-<details>
-<summary><b>Vorlage zum Kopieren</b> — die Struktur, die alle guten Karten teilen</summary>
-
-````markdown
-# VW-XXXX — <ein Satz, der das Problem benennt, nicht die Lösung>
-
-## Ziel
-
-Was soll nach der Änderung anders sein? Ein bis zwei Sätze, im Präsens,
-aus fachlicher Sicht. Keine Technik.
-
-## Hintergrund
-
-Warum fällt das jetzt auf? Wer hat es gemerkt, was hat es gekostet?
-Zahlen und Beispiele helfen mehr als Adjektive.
-
-## Fachliche Vorgabe
-
-Die Regel, die gelten soll — und woher sie kommt. Verweist auf die Quelle
-(Spezifikation, Ticket, Beschluss), nicht auf den bestehenden Code.
-Der Code ist das, was repariert wird; er kann nicht die Vorgabe sein.
-
-## Abnahmekriterien
-
-- [ ] Prüfbare Aussagen, keine Absichten. "Der Deckel greift" ist prüfbar,
-      "die Abrechnung ist korrekt" nicht.
-- [ ] Sagt ausdrücklich, ob Tests dazugehören — und woraus sie hergeleitet
-      werden sollen.
-- [ ] Nennt die Grenze: Was wird NICHT geändert? Das verhindert, dass der
-      Agent das halbe Modul umbaut.
-- [ ] Ein Kriterium, das den fertigen Zustand beschreibt (z. B. Build grün).
-
-## Betroffene Pfade
-
-* Die Dateien oder Verzeichnisse, in denen die Änderung stattfindet.
-* Lieber zu genau als zu grob.
-
-## Testbefehl
-
-```bash
-<der Befehl, mit dem man das Ergebnis prüft>
-```
-
-## Hinweise
-
-Alles, was ein neuer Kollege wissen müsste. Bekannte Fallen, verwandte
-Tickets, Konventionen, die gelten.
-````
-
-</details>
+Die Faustregel: **Ein delegierbares Ticket beantwortet drei Fragen, ohne dass jemand
+nachfragen muss.** Was soll anders sein? Woran erkenne ich, dass es stimmt? Wo muss ich
+hinschauen?
 
 <details>
-<summary><b>Ein durchgerechnetes Beispiel</b> — dasselbe Ticket vorher und nachher</summary>
+<summary><b>Ein Beispiel</b> — dasselbe Ticket vorher und nachher</summary>
 
-Bewusst **nicht** eine der vier Karten, damit die Aufgabe eine Aufgabe bleibt.
+Bewusst keine der vier Karten, damit es nichts vorwegnimmt.
 
-**Vorher — so kam es rein:**
+**Vorher, so kam es rein:**
 
-````markdown
+```markdown
 # VW-4699 — Export ist zu langsam
 
-Der CSV-Export dauert ewig, die Kollegen beschweren sich.
-Bitte optimieren, sollte danach deutlich schneller sein.
-Priorität: hoch
-````
-
-Drei Fragen bleiben offen: *Wie langsam ist ewig? Wie schnell ist schnell genug?
-Welcher Export?* Der Agent würde alle drei raten.
-
-**Nachher — so ist es delegierbar:**
-
-````markdown
-# VW-4699 — CSV-Export der Monatsabrechnung braucht über 90 Sekunden
-
-## Ziel
-
-Der Monatsexport für einen Ladepark mit 5.000 Sitzungen läuft in unter
-10 Sekunden durch. Heute sind es 90 bis 120.
-
-## Hintergrund
-
-Die Abrechnung wird zum Monatsersten für 40 Parks erzeugt. Bei 90 Sekunden
-je Park läuft der Job über eine Stunde und kollidiert mit dem Backup-Fenster.
-Gemessen am 01.07. mit Park BW-Stuttgart-Nord: 112 Sekunden für 5.214 Sitzungen.
-
-## Fachliche Vorgabe
-
-Am Format der Ausgabe ändert sich nichts. Die exportierte Datei muss vor und
-nach der Änderung Byte für Byte identisch sein.
-
-## Abnahmekriterien
-
-- [ ] Ein Export mit 5.000 Sitzungen läuft in unter 10 Sekunden.
-- [ ] Ein Test vergleicht die Ausgabe vor und nach der Änderung auf Gleichheit;
-      die Referenzdatei liegt unter `src/test/resources/export-referenz.csv`.
-- [ ] Es wird nur der Export geändert. Die Berechnung bleibt unangetastet.
-- [ ] `mvn -q test` läuft grün.
-
-## Betroffene Pfade
-
-* `src/main/java/de/voltwerk/export/CsvExporter.java`
-* `src/test/java/de/voltwerk/export/`
-
-## Testbefehl
-
-```bash
-mvn -q -pl modul-5 -am test
+Der Export dauert ewig, Kunden beschweren sich. Bitte schneller machen,
+am besten diese Woche noch. Danke!
 ```
 
-## Hinweise
+**Nachher kamen dazu:** ein messbares Ziel (unter 10 Sekunden bei 50.000 Zeilen), der
+Hintergrund mit Zahlen, die fachliche Vorgabe mit Quelle, prüfbare Abnahmekriterien
+**inklusive der Grenze** (was ausdrücklich *nicht* geändert wird), die betroffenen
+Pfade, der Testbefehl und die bekannten Fallen.
 
-* Die Konventionen aus `AGENTS.md` gelten.
-* Der Export wird auch vom Nightly-Job benutzt, siehe `.github/workflows/`.
-````
-
-Was sich geändert hat: aus „zu langsam" wurde **eine Zahl**, aus „optimieren" wurde
-**ein prüfbares Ziel**, und dazugekommen ist der Satz, der die Grenze zieht — *die
-Berechnung bleibt unangetastet*. Ohne den baut der Agent auch die Berechnung um.
+Aus zwei Sätzen Meinung wurde ein Auftrag, den ein Fremder ausführen kann. Genau das
+ist der Unterschied — nicht die Länge.
 
 </details>
 
 <details>
-<summary>🚨 <b>Musterlösung</b> — nur im Notfall aufklappen</summary>
+<summary>🚨 <b>Musterlösung C1</b> — nur im Notfall aufklappen</summary>
 
 **Ernsthaft: erst wenn ihr feststeckt.** Wer hier zuerst hineinschaut, bekommt eine
 fertige Karte und nimmt nichts mit. Der Wert dieser Übung liegt im Streit darüber, was
@@ -442,12 +332,18 @@ mvn -q -pl modul-5 -am test
 * Dieses Ticket ist bewusst klein.
 ````
 
-**Diese Karte ist mit dem Werkzeug aus Schritt 4 geprüft**, und zwar mehrfach. Das
-Urteil zuletzt: *„Zu diesem Auftrag muss ich nichts klären."* Übrig blieb eine einzige
-Frage — ob ein bestimmtes Umsetzungsidiom gemeint ist.
+**Diese Karte ist mit dem Werkzeug aus Schritt 3 geprüft.** Zuletzt kamen **drei
+Fragen** zurück, und alle drei betrafen die *Umsetzung*: welches `java.time`-Idiom
+gemeint ist, wie `RECHEN_ZONE` in die neue Welt gebrückt werden soll, und wo ein
+Befund im PR zu notieren ist. Keine einzige Frage danach, **was** der Auftrag will.
 
-Zum Vergleich, dieselbe Prüfung an der Originalkarte: **acht Fragen.** Das ist die Zahl,
-um die es geht.
+Dieselbe Prüfung an der Originalkarte: **sechs Fragen** — und jede davon fragt, was
+gemeint ist. „Soll das Ist-Verhalten erhalten bleiben oder das Soll-Verhalten laut
+Spec?" „Welcher Umfang ist gemeint?" „Ab wann gilt Performance als besser?"
+
+**Auf die Art der Fragen kommt es dabei mehr an als auf ihre Zahl.** Drei Fragen zum
+Idiom kosten euch einen Satz Antwort. Sechs Fragen zur Absicht bedeuten, dass der
+Agent ohne Antwort **raten** wird — und er fragt nicht nach, er rät still.
 
 **Und das ist der Zustand, den ihr anstrebt.** Nicht null Fragen — ein Ticket, das
 auch die Umsetzungsidiome vorschreibt, schreibt den Code im Ticket. Sondern: keine
@@ -469,73 +365,50 @@ Vier Kategorien, die GitHub ausdrücklich als ungeeignet dokumentiert:
   Daten, alles rund um Authentifizierung, Incident Response.
 * **Mehrdeutig** — offene Aufgaben, unklare Anforderungen, alles, wo man sich die Lösung
   erst erarbeiten muss.
-* **Lernaufgaben** — alles, wo *ihr* etwas verstehen wollt. Der Agent lernt für euch,
+* **Lernaufgaben** — alles, wo **ihr** etwas verstehen wollt. Der Agent lernt für euch,
   und ihr habt nichts davon.
 
 Die schlechte Karte fällt in mindestens **zwei** dieser Kategorien. In welche?
 
 ---
 
-## Dazwischen — Die Delegation
+## Dazwischen — die Delegation
 
-**5 Minuten · Demo vorne, oder ihr selbst**
-
-Jetzt geht eine der **guten** Karten in die Cloud. Es gibt zwei Wege, und sie
-funktionieren **grundverschieden**.
+Zwei Wege, und sie funktionieren grundverschieden.
 
 ### Weg 1 — aus einer laufenden Session: `/delegate`
 
-`/delegate` übergibt die **laufende Session** an GitHub. Die CLI beschreibt es so:
-
-> *Send this session to GitHub and Copilot will create a PR.*
-
-**Der Sitzungsverlauf ist der Auftrag.** Optional könnt ihr noch etwas mitgeben — die
-Eingabezeile zeigt `/delegate [prompt]` —, aber das ist ein Zusatz, kein Ersatz für
-den Kontext. Wer `/delegate` in einer frischen Session tippt, übergibt eine leere.
-
-**Genau das ist die Falle nach Schritt 4.** Der Prüfbefehl lief mit `copilot -p`, also
-nicht-interaktiv. Der Kontext, den ihr euch dort aufgebaut habt — Karte gelesen, Code
-gelesen, Fragen beantwortet — liegt in *dieser* Session, nicht in eurem Terminal. Wenn
-ihr jetzt einfach `copilot` startet, ist alles weg.
-
-Am Ende jedes `-p`-Laufs steht deshalb eine Zeile wie:
-
-```text
-Resume     copilot --resume=a0424c50-d18f-4e86-8f66-dad12311d0fd
-```
-
-Ihr steigt in genau diese Session ein — mit der ID, oder einfacher in die zuletzt
-benutzte:
+**Der Sitzungsverlauf ist der Auftrag.** Die Falle direkt nach der Probe aus C1: Der
+Prüfbefehl lief mit `copilot -p`, also nicht-interaktiv — der Kontext liegt in **jener**
+Session, nicht in eurem Terminal. Am Ende jedes `-p`-Laufs steht deshalb eine
+Resume-Zeile. Steigt dort wieder ein, am einfachsten in die zuletzt benutzte Session:
 
 ```bash
 copilot --continue
 ```
 
-Und dann, mit dem Kontext von vorhin im Rücken:
+Und dann, mit dem Kontext im Rücken:
 
-```
+```text
 > Was wirst du anfassen, und was ausdrücklich nicht?
-
-  [Antwort prüfen — das ist der Moment, der einen halbstündigen Fehllauf verhindert]
-
+[Antwort prüfen — das ist der Moment, der einen halbstündigen Fehllauf verhindert]
 > /delegate
 ```
 
-Optional mit Zielbranch oder Zusatzhinweis:
+Optional nehmt ihr einen Ziel-Branch oder einen Zusatzsatz mit:
 
-```
-/delegate --base entwicklung
-/delegate Halte dich strikt an die Abnahmekriterien, keine Zusatzarbeit.
+```text
+> /delegate --base entwicklung
+> /delegate Halte dich strikt an die Abnahmekriterien, keine Zusatzarbeit.
 ```
 
-**Das ist der eigentliche Vorteil gegenüber einem Chatfenster:** Ihr könnt vorher
-prüfen, ob er es verstanden hat. Ein Agent, der schon läuft, lässt sich nicht mehr
-nachjustieren — ihr könnt ihn nur abbrechen.
+Das ist der eigentliche Vorteil gegenüber einem Chatfenster: **Ihr könnt vorher prüfen,
+ob er es verstanden hat.**
 
 ### Weg 2 — direkt aus dem Terminal, ohne Session
 
-Hier ist die **Karte** der Auftrag, nicht die Session. Kein Vorgespräch, keine
-Möglichkeit nachzufragen — die Karte muss allein tragen. Genau deshalb war C1 wichtig.
+Hier ist die **Karte** der Auftrag. Kein Vorgespräch, sie muss allein tragen — genau
+deshalb war C1 wichtig.
 
 ```bash
 gh agent-task create -F modul-4/aufgabenkarten/C1-vw-4711.md --follow
@@ -543,32 +416,33 @@ gh agent-task list
 gh agent-task view TASK-ID
 ```
 
-`-F` liest die Beschreibung aus einer Datei. Ohne `-F` geht auch Fließtext direkt:
-`gh agent-task create "..."`. Und `--base <branch>` wählt den Zielbranch, falls nicht
-der Standardbranch gemeint ist.
+`-F -` liest von stdin. Und `--custom-agent abrechnungs-reviewer` benutzt
+`.github/agents/abrechnungs-reviewer.md` — damit schickt ihr die Rolle aus **Lab B** in
+die Cloud:
+
+```bash
+gh agent-task create -F modul-4/aufgabenkarten/C1-vw-4711.md --custom-agent abrechnungs-reviewer
+```
+
+> `gh agent-task` gibt es ab gh 2.80.0 und ist Public Preview.
 
 > **Achtung bei Weg 2:** Der Cloud-Agent arbeitet auf dem Stand, der **im Repository**
-> liegt — nicht auf eurem Arbeitsverzeichnis. Eine Karte, die ihr gerade lokal
-> geschrieben und nicht committet habt, sieht er nicht. Bei Weg 1 ist das anders: Dort
-> reist der Sitzungskontext mit, auch wenn nichts committet ist.
+> liegt — nicht auf eurem Arbeitsverzeichnis. Eine lokal geschriebene, nicht committete
+> Karte sieht er nicht. Bei Weg 1 reist der Sitzungskontext mit.
 
-Danach legt Copilot einen Branch an, öffnet einen **Draft-PR** und arbeitet im
-Hintergrund weiter — auch wenn der Laptop zugeklappt wird.
-
-**Worauf ihr achtet, während es läuft** (das ist der eigentliche Inhalt dieser fünf
-Minuten, nicht der Tastendruck):
+**Worauf ihr achtet, während es läuft** — das ist der eigentliche Inhalt, nicht der
+Tastendruck:
 
 * Im **Agents-Tab** auf github.com: die drei Statusstufen *läuft · wartet auf Review ·
-  fertig*. Mehrere Läufe stehen dort nebeneinander.
-* Im **Setup-Log**: `setup-java`, der Maven-Cache, `dependency:go-offline`. Das ist der
-  Beweis, dass die Umgebung aus `copilot-setup-steps.yml` wirklich gegriffen hat.
-* Die **Wartezeit**. Ein Lauf dauert typischerweise zehn bis dreißig Minuten. Genau
-  deshalb macht ihr jetzt C3 und kommt später zu C2 zurück.
+  fertig*.
+* Im **Setup-Log**: `setup-java`, der Maven-Cache, `dependency:go-offline`. Der Beweis,
+  dass die Umgebung aus `copilot-setup-steps.yml` gegriffen hat.
+* Die **Wartezeit**: typischerweise zehn bis dreißig Minuten. Genau deshalb macht ihr
+  jetzt C3 und kommt später zu C2 zurück.
 
-> **In der Demo-Variante** löst der Trainer aus, ihr schaut zu und stellt Fragen.
-> Der PR, den ihr gleich in C2 reviewt, ist ein **echter** Agent-PR — nur nicht eurer.
-> Für das Review macht das keinen Unterschied. Für die Frage „darf das gemerged
-> werden?" erst recht nicht.
+> **In der Variante Demo** löst der Trainer aus, ihr schaut zu und stellt Fragen. Der
+> PR, den ihr in C2 reviewt, ist ein echter Agent-PR — nur nicht eurer. Für das Review
+> macht das keinen Unterschied.
 
 ---
 
@@ -577,27 +451,28 @@ Minuten, nicht der Tastendruck):
 **15 Minuten · Hands-on**
 
 Der Draft-PR ist der spannende Teil, nicht der Diff. Ihr braucht dafür nur **Leserechte
-im Browser** — das reicht für alles, was hier zu tun ist.
+im Browser**.
 
 **Prüft in dieser Reihenfolge:**
 
 1. **Das Setup-Log.** Sind die Setup-Steps überhaupt gelaufen? Hat `setup-java` die
    richtige Version gezogen? Wurden die Maven-Abhängigkeiten vorab aufgelöst?
-2. **Der Testlauf.** Hat der Agent `mvn -q test` wirklich ausgeführt — oder nur behauptet,
-   es sei grün? Sucht die Ausgabe im Log.
+2. **Der Testlauf.** Hat der Agent `mvn -q test` wirklich ausgeführt — oder nur
+   behauptet, es sei grün? Sucht die Ausgabe im Log.
 3. **Die Begründung.** Der Agent beschreibt im PR, was er getan hat. Deckt sich das mit
    dem Diff?
 4. **Der Diff selbst.** Erst jetzt.
 5. **Die Session-Logs.** Jeder Agent-Commit führt zurück zur Session, in der er
-   entstanden ist. Da steht, was der Agent versucht, verworfen und gedacht hat.
-   Das ist die ehrlichste Quelle im ganzen PR.
+   entstanden ist. Da steht, was der Agent versucht, verworfen und gedacht hat. Die
+   ehrlichste Quelle im ganzen PR.
 
 **Drei Dinge, die euch überraschen werden:**
 
 * **Eure eigene Approval zählt nicht.** Wer den Task ausgelöst hat, kann den PR nicht
   freigeben. Ihr braucht ein zweites Augenpaar — genau wie bei Menschen.
 * **CI läuft für Agent-PRs standardmäßig nicht automatisch.** Sie muss manuell
-  freigegeben werden. Das ist Absicht: sonst führt ein PR aus dem Nichts eure Workflows aus.
+  freigegeben werden. Das ist Absicht: sonst führt ein PR aus dem Nichts eure Workflows
+  aus.
 * **Branch Protection und Review-Pflicht gelten unverändert.** Ein Agent-PR ist ein PR.
 
 **Fertig, wenn** ihr in `modul-4/C2-entscheidung.md` festgehalten habt:
@@ -605,8 +480,8 @@ im Browser** — das reicht für alles, was hier zu tun ist.
 * Merge ja oder nein — **mit Begründung**
 * Ein Punkt, an dem der Agent es besser gemacht hat, als ihr erwartet habt
 * Ein Punkt, an dem ihr nachbessern musstet
-* Credits und Laufzeit für den Messbogen aus Modul 3 — in der Demo-Variante nennt
-  euch der Trainer die Zahlen aus seinem Lauf
+* Credits und Laufzeit für den Messbogen aus Modul 3 — in der Variante Demo nennt euch
+  der Trainer die Zahlen aus seinem Lauf
 
 > **Das ist die Übung, die ihr am Montag wirklich braucht.** Delegieren lernt man in
 > einer Minute. Zu entscheiden, ob ein Agent-PR gemerged werden darf, ist die Arbeit,
@@ -619,7 +494,7 @@ im Browser** — das reicht für alles, was hier zu tun ist.
 **20 Minuten**
 
 Vom Einzeltask zum wiederkehrenden. In `modul-4/workflow-vorlagen/` liegen drei
-Workflows **mit Lücken**. Sucht euch **einen** aus und macht ihn vollständig.
+Workflows **mit Lücken**. Sucht euch einen aus und macht ihn vollständig.
 
 | Vorlage | Läuft wann | Was sie ausgibt | TODOs |
 |---|---|---|---|
@@ -627,26 +502,23 @@ Workflows **mit Lücken**. Sucht euch **einen** aus und macht ihn vollständig.
 | `testluecken-report.md` | wöchentlich | ein Draft-PR | 10 |
 | `ci-triage.md` | bei Pull Requests | ein Kommentar | 7 |
 
-**Nehmt `doku-drift.md`, wenn ihr euch nicht entscheiden könnt.** Sie ist die
-kürzeste. `ci-triage.md` ist die anspruchsvollste — sie wird durch **fremde** Pull
-Requests ausgelöst, und genau daran hängt ihre schwierigste Aufgabe.
+Nehmt `doku-drift.md`, wenn ihr euch nicht entscheiden könnt — sie ist die kürzeste.
+`ci-triage.md` ist die anspruchsvollste: Sie wird durch **fremde** Pull Requests
+ausgelöst, und genau daran hängt ihre schwierigste Aufgabe.
 
-**Jedes TODO in der Vorlage erklärt, was fehlt.** Ihr müsst nichts erraten; ihr müsst
-lesen und verstehen.
+**Jedes TODO in der Vorlage erklärt, was fehlt.** Ihr müsst nichts erraten, nur lesen
+und verstehen.
 
 ### Vorbereitung
 
 ```bash
-gh extension install github/gh-aw     # falls noch nicht da
-gh aw --version
-gh aw init --engine copilot           # einmal pro Repo
+gh extension install github/gh-aw    # falls noch nicht da
+gh aw init --engine copilot          # einmal pro Repo
 ```
 
-> ⚠️ **`gh aw init` legt eine eigene `.github/workflows/copilot-setup-steps.yml` an.**
-> Wenn ihr die Vorlage aus `modul-4/` dorthin kopiert, überschreibt eine die andere,
-> und niemand warnt euch. **Erst `gh aw init`, dann hineinschauen.** Liegt dort schon
-> etwas, arbeitet unter einem anderen Dateinamen und vergleicht am Ende. Im echten
-> Repo müsst ihr die beiden von Hand zusammenführen — auch das ist realistisch.
+> **`gh aw init` legt eine eigene `copilot-setup-steps.yml` an.** Liegt dort schon eine
+> (bei uns: ja), arbeitet unter einem anderen Dateinamen und vergleicht am Ende. Im
+> echten Repo führt ihr beide von Hand zusammen — auch das ist realistisch.
 
 ### Der Ablauf
 
@@ -657,26 +529,24 @@ gh aw compile
 ```
 
 `gh aw compile` ist euer schnellstes Feedback im ganzen Workshop. Er sagt oft wörtlich,
-was er stattdessen erwartet hat, inklusive „Did you mean". **Benutzt ihn als
-Übungsschleife, nicht als Abschlussprüfung** — und ohne `--verbose`, sonst zählt er
-interne Meldungen als Warnungen mit.
+was er stattdessen erwartet hat. **Benutzt ihn als Übungsschleife, nicht als
+Abschlussprüfung** — und ohne `--verbose`, sonst zählt er interne Meldungen als
+Warnungen mit.
 
 ### Fertig, wenn …
 
-1. `gh aw compile` meldet **null Warnungen**
-2. die Prüfliste im Tipps-Block unten ist abgehakt
-3. ihr könnt erklären, **warum** euer Workflow genau diese Permissions hat
+1. `gh aw compile` **null Warnungen** meldet,
+2. die Prüfliste im Tipps-Block abgehakt ist,
+3. ihr erklären könnt, **warum** euer Workflow genau diese Permissions hat.
 
-> ⚠️ **Punkt 2 ist nicht optional, und hier ist der Grund.** Wir haben es nachgemessen:
-> **`ci-triage.md` kompiliert mit allen offenen TODOs fehlerfrei und ohne
-> Warnung.** Wer nur auf „0 warnings" schaut, hält eine unfertige Datei für fertig.
->
-> Das ist kein Fehler der Vorlage, sondern die Lektion des ganzen Labs:
+> **Punkt 2 ist nicht optional, und hier ist der Grund.** Wir haben es nachgemessen:
+> `ci-triage.md` kompiliert **mit allen offenen TODOs** fehlerfrei und ohne Warnung.
+> Wer nur auf „0 warnings" schaut, hält eine unfertige Datei für fertig.
 > **Ein Compiler prüft Form, kein Verständnis.** Genau deshalb gibt es Reviews — bei
 > Workflows wie bei Code.
 
 <details>
-<summary><b>Tipps</b> — Prüfliste und Hinweise zu eurer Vorlage</summary>
+<summary><b>Tipps</b> — Prüfliste und die Fallstricke, die euch garantiert treffen</summary>
 
 **Für alle drei:** Der Compiler meldet **pro Lauf nur einen Fehler je Datei**. Nach dem
 Fix kann sofort der nächste auftauchen — das ist normal, nicht Pech. Und die `i →`-Zeile
@@ -701,7 +571,7 @@ Zeile *„Compiled 1 workflow: 1 succeeded, 0 warnings"*.
 
 **`testluecken-report.md`**
 
-- [ ] `java` im Netz-Allowlist? Ohne den Eintrag löst Maven keine Abhängigkeiten auf.
+- [ ] `java` in der Netz-Allowlist? Ohne den Eintrag löst Maven keine Abhängigkeiten auf.
 - [ ] Das Werkzeug zum **Schreiben** von Dateien da? Es gibt dafür genau eines.
 - [ ] Maven in der bash-Allowlist — nicht alles freigeben.
 - [ ] Der PR ein **Entwurf**? Ein Wort genügt.
@@ -717,18 +587,7 @@ Zeile *„Compiled 1 workflow: 1 succeeded, 0 warnings"*.
 
 ---
 
-**Und die zwei, die sauber durchkompilieren und trotzdem falsch sind:**
-
-`bash: [":*"]` ist keine Einschränkung, sondern die Erlaubnis für alles — dasselbe wie
-`bash: true`, nur unauffälliger geschrieben. Und `add-comment` **ohne** `target`
-kommentiert nicht unbedingt dorthin, wo ihr denkt.
-
-Beides meldet der Compiler nicht. Beides findet ein Review.
-
-</details>
-
-<details>
-<summary><b>Die fünf Fallstricke</b> — die euch garantiert treffen</summary>
+**Die fünf Fallstricke:**
 
 1. **Fehlende Permission für ein Toolset.** `toolsets: [default]` enthält
    `pull_requests` — also braucht ihr `pull-requests: read`. Häufigster Warnfall.
@@ -742,6 +601,16 @@ Beides meldet der Compiler nicht. Beides findet ein Review.
 
 Und einer, der keiner ist: der Hinweis zur token-basierten Inference bei
 `engine: copilot`. Erscheint immer, ist kein Fehler.
+
+---
+
+**Und die zwei, die sauber durchkompilieren und trotzdem falsch sind:**
+
+`bash: [":*"]` ist keine Einschränkung, sondern die Erlaubnis für alles — dasselbe wie
+`bash: true`, nur unauffälliger geschrieben. Und `add-comment` **ohne** `target`
+kommentiert nicht unbedingt dorthin, wo ihr denkt.
+
+Beides meldet der Compiler nicht. Beides findet ein Review.
 
 </details>
 
@@ -1017,11 +886,11 @@ Agent-Prompt.
 <details>
 <summary>Wenn ihr den Workflow wirklich scharf schalten wollt</summary>
 
-Nicht Teil der Übung — und **nicht in diesem Repo.** Macht das in einem eigenen,
-sonst liegt eure Lösung für alle sichtbar herum. Der Ablauf:
+Nicht Teil der Übung — und **nicht in diesem Repo**, sonst liegt eure Lösung für alle
+sichtbar herum. In einem eigenen Repo:
 
 ```bash
-git add .github/workflows/doku-drift.md .github/workflows/doku-drift.lock.yml .gitattributes
+git add .github/workflows/doku-drift.md .github/workflows/doku-drift.lock.yml
 git commit -m "feat(build): ergaenze Doku-Drift-Workflow"
 git push
 gh aw status
@@ -1044,9 +913,9 @@ gh aw audit 32714750029 --parse     # eure ID einsetzen
 
 ### Das Sicherheitsmodell — warum das Ganze überhaupt vertretbar ist
 
-Der Agent läuft **read-only**. Er darf nichts schreiben. Was er ausgeben will, geht als
-**Safe Output** an einen **separaten Job**, der ausschließlich die deklarierte Aktion
-ausführt. Dazwischen wird die Ausgabe saniert.
+Der Agent läuft **read-only**. Was er ausgeben will, geht als **Safe Output** an einen
+**separaten Job**, der ausschließlich die deklarierte Aktion ausführt; dazwischen wird
+die Ausgabe saniert.
 
 Konsequenz: Selbst wenn ein manipuliertes Werkzeug-Ergebnis den Agenten übernimmt, kann
 er nur das tun, was in `safe-outputs:` steht. **Er schlägt vor, ein anderer Job führt
@@ -1078,25 +947,12 @@ Das ist keine Technikfrage. Das ist die Frage, an der Agent-Programme scheitern.
 Vorlage: **[`modul-4/gruppenarbeit-workflow-canvas.md`](gruppenarbeit-workflow-canvas.md)**
 — eine pro Gruppe, ausgedruckt oder auf dem Laptop.
 
-**Der Auftrag:** Skizziert einen Workflow für **euren** Alltag, nicht für die
-Voltwerk-Suite. Sechs Felder müssen ausgefüllt sein:
+Skizziert einen Workflow für **euren** Alltag, nicht für die Voltwerk-Suite. Alle Felder
+und die Pflichtfragen stehen auf dem Canvas; die Pflichtfragen entscheiden, ob der
+Entwurf ernst gemeint ist.
 
-**Trigger** (Zeitplan oder Ereignis) · **Auftrag in zwei Sätzen** · **erlaubte Tools** ·
-**Safe Output** (Issue, Kommentar oder Draft-PR) · **Owner** · **Budget**
-
-**Ablauf**
-
-* 7 Minuten entwerfen
-* 3 Minuten Speed-Feedback: Entwurf mit der Nachbargruppe tauschen und kommentieren.
-  **Kommentieren, nicht diskutieren** — die Zeit reicht nicht für beides.
-
-**Die Pflichtfrage am Ende — und die ist keine Formalie:**
-
-> Was ist der Schaden, wenn dieser Workflow Unsinn liefert?
-> Und wer fängt ihn am Gate ab — mit Namen, nicht mit Rolle?
-
-Wer den Schaden nicht benennen kann, hat den Workflow nicht zu Ende gedacht. Das ist
-kein Vorwurf, sondern der billigste Zeitpunkt, es zu merken.
+**Ablauf:** 7 Minuten entwerfen, 3 Minuten Speed-Feedback mit der Nachbargruppe.
+**Kommentieren, nicht diskutieren** — die Zeit reicht nicht für beides.
 
 **Ergebnis:** ein umsetzbarer Entwurf pro Gruppe. Den besten setzen wir nach dem
 Workshop gemeinsam auf.
@@ -1105,41 +961,28 @@ Workshop gemeinsam auf.
 
 ## Die Umgebung, in der das läuft
 
-`modul-4/copilot-setup-steps.yml.vorlage` ist die Datei, die die Arbeitsumgebung des
-Agenten definiert. Sie gehört nach `.github/workflows/copilot-setup-steps.yml`.
-
-Heute läuft alles auf **GitHub-hosted Runnern** (`ubuntu-latest`). Ihr braucht dafür
-keine eigene Infrastruktur — nur ein Repo, in dem der Coding Agent aktiviert ist.
+`modul-4/copilot-setup-steps.yml.vorlage` definiert die Arbeitsumgebung des Agenten und
+gehört nach `.github/workflows/copilot-setup-steps.yml`. Heute läuft alles auf
+**GitHub-hosted Runnern** (`ubuntu-latest`) — ihr braucht keine eigene Infrastruktur.
 
 **Die harten Regeln:**
 
-* Der Job **muss** `copilot-setup-steps` heißen. Anderer Name = wird ignoriert.
+* Der Job **muss** `copilot-setup-steps` heißen. Anderer Name: wird still ignoriert.
 * Nur **sechs** Job-Keys werden ausgewertet:
   `steps`, `permissions`, `runs-on`, `services`, `snapshot`, `timeout-minutes`.
   **Alles andere wird still ignoriert** — auch ein `env:` auf Job-Ebene.
   Environment-Variablen gehören auf **Step-Ebene**.
 * `timeout-minutes` maximal **59**.
-* `runs-on` ist heute **`ubuntu-latest`** — GitHub-hosted, keine eigene Infrastruktur nötig.
 * **Secrets für den Agenten sind ein eigener Typ.** Sie liegen unter
   *Settings → Secrets and variables → **Agents***. Actions-Secrets sind für den Agenten
   **unsichtbar**. Der Präfix `COPILOT_MCP_` hat Sonderverhalten.
 * Schlagen die Setup-Steps fehl, **bricht der Agent nicht ab** — er arbeitet ohne die
-  Umgebung weiter. Genau deshalb müsst ihr ins Setup-Log schauen und nicht nur auf den Diff.
+  Umgebung weiter. Genau deshalb schaut ihr ins Setup-Log und nicht nur auf den Diff.
 
----
+### Der Schritt danach: eigene Runner
 
-## Der Schritt danach: eigene Runner
-
-**3 Minuten · Konzept, kein Lab**
-
-Heute läuft der Agent auf GitHub-hosted Runnern. Das ist der richtige Anfang: Ihr
-lernt Delegation, Review und Gate, ohne gleichzeitig Infrastruktur zu debuggen.
-
-Der Coding Agent unterstützt aber auch **self-hosted Runner** (GA). Das ist der Schritt,
-den ihr geht, sobald der Agent an Code arbeiten soll, der euer Netz nicht verlässt, oder
-Abhängigkeiten braucht, die nur intern erreichbar sind.
-
-**Was sich dann ändert — und was es kostet:**
+**Bewusst kein Übungsteil.** Ihr habt den Umzug in der Live-Demo gesehen; hier steht,
+was sich dabei ändert:
 
 | | GitHub-hosted (heute) | Self-hosted (später) |
 |---|---|---|
@@ -1150,15 +993,16 @@ Abhängigkeiten braucht, die nur intern erreichbar sind.
 | Kosten | Actions-Minuten | Actions-Minuten **plus** euer Compute |
 | Verantwortung | GitHub | ihr |
 
-Die entscheidende Zeile ist die vorletzte: **Die eingebaute Firewall wird für
-self-hosted Runner deaktiviert.** Eure Allowlist tritt an ihre Stelle. Das ist keine
+Die entscheidende Zeile ist die zweite: **Die eingebaute Firewall wird für self-hosted
+Runner deaktiviert.** Eure Allowlist tritt an ihre Stelle. Das ist kein
 Konfigurationsdetail, sondern eine Übergabe von Verantwortung.
 
-**Die Frage für eure Rückfahrt:** Wer in eurem Haus besitzt diese Allowlist, und wer darf
-sie ändern? Wenn ihr darauf keine Antwort mit einem Namen habt, ist der Wechsel auf
-eigene Runner noch nicht vorbereitet — egal wie fertig die Technik ist.
+Die Checkliste dazu steht in **Anhang C** von `copilot-setup-steps.yml.vorlage`, der
+Maven-Proxy-Schritt in Anhang B.
 
-Anhang C der Vorlage `copilot-setup-steps.yml.vorlage` enthält die Checkliste dazu.
+**Die eine Frage für die Rückfahrt:** Wer in eurem Haus besitzt die Egress-Allowlist —
+mit Namen? Ohne diese Antwort ist der Wechsel nicht vorbereitet, egal wie fertig die
+Technik ist.
 
 ---
 

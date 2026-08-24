@@ -62,6 +62,10 @@ modul-4/aufgabenkarten/*-repariert.md
 .github/workflows/testluecken-report.*
 .github/workflows/ci-triage.*
 
+# `gh aw init` legt zusaetzlich eine eigene copilot-setup-steps.yml an. Die Vorlage
+# fuer die Teilnehmer liegt bewusst unter modul-4/ und NICHT unter .github/.
+.github/workflows/copilot-setup-steps.yml
+
 # Auch das Geruest, das `gh aw init` anlegt. Die Teilnehmer fuehren den Befehl
 # selbst aus -- liegt das Ergebnis schon da, verhaelt er sich anders als
 # beschrieben, und in /mcp taucht ein Server auf, der nicht der aus Lab B ist.
