@@ -123,7 +123,6 @@ und am Morgen gemeinsam geprüft:
 Wenn davon etwas fehlt, läuft Modul 4 im **Trial-Modus**:
 
 ```bash
-gh aw trial ./.github/workflows/doku-drift.md --delete-host-repo-after
 ```
 
 Trial läuft gegen ein simuliertes Repository. Keine echten Issues, keine echten PRs.

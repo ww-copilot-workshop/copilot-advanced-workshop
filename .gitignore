@@ -54,3 +54,11 @@ modul-1/uebungen/.chaos/
 # die Antwort an alle folgenden Gruppen mit.
 # (Ist beim Vorbereiten genau einmal passiert. Deshalb steht das hier.)
 modul-4/aufgabenkarten/*-repariert.md
+
+# Ergebnisse von Uebung C3 gehoeren NICHT ins Repo. Die Teilnehmer legen diese
+# Dateien selbst an -- wer sie eincheckt, liefert die Loesung mit.
+# (Ist beim Vorbereiten zweimal passiert, einmal ueber `git add -A`.)
+.github/workflows/doku-drift.*
+.github/workflows/testluecken-report.*
+.github/workflows/ci-triage.*
+.github/aw/

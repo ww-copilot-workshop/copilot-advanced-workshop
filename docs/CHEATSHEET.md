@@ -250,7 +250,7 @@ gh aw init --engine copilot
 gh aw new NAME --engine copilot
 gh aw compile                 # .md  ->  .lock.yml   (BEIDE committen!)
 gh aw validate                # nur prüfen, kein Lockfile
-gh aw trial ./.github/workflows/x.md --delete-host-repo-after
+gh aw trial ./.github/workflows/x.md   # braucht COPILOT_GITHUB_TOKEN im Host-Repo
 gh aw run NAME
 gh aw logs NAME
 gh aw audit RUN-ID --parse

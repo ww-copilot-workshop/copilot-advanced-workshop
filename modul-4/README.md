@@ -1003,62 +1003,22 @@ Verteidigungslinie — selbst ein übernommener Agent kann nur kommentieren.
 
 </details>
 
-### Ausprobieren, ohne etwas anzurichten — und warum nicht heute
-
-`gh aw trial` läuft gegen ein **simuliertes** Repository: keine echten Issues, keine
-echten PRs im Zielrepo. Das klingt nach dem perfekten ersten Lauf — **im Lab benutzen
-wir es trotzdem nicht.** Wir haben es durchgespielt, und es scheitert an drei Stellen,
-die alle nichts mit eurem Workflow zu tun haben:
-
-| Hürde | Was passiert |
-|---|---|
-| **Das Secret fehlt** | `trial` legt das Host-Repo in eurem **persönlichen** Account an. Dort gibt es kein `COPILOT_GITHUB_TOKEN` und keine zentrale Copilot-Abrechnung. Der Lauf bricht ab: *„None of the following secrets are set."* |
-| **Ein Klick im Browser mittendrin** | `trial` hält an und verlangt, dass ihr in den Repo-Einstellungen die Actions-Berechtigungen freischaltet. Erst dann geht es weiter. |
-| **Das Aufräumen scheitert** | `--delete-host-repo-after` braucht den Scope `delete_repo`. Fehlt er, bleibt ein privates Repo in eurem Account zurück — mit einer Fehlermeldung, die man leicht überliest. |
-
-**Für heute heißt das: `gh aw compile` ist euer Feedback, nicht `trial`.** Der Compiler
-sagt euch alles über Form und Permissions, und genau darum geht es in dieser Übung.
-
-<details>
-<summary>Für zuhause: was <code>trial</code> braucht, damit es durchläuft</summary>
-
-```bash
-gh auth refresh -h github.com -s delete_repo    # damit das Aufraeumen klappt
-gh aw trial ./.github/workflows/doku-drift.md --delete-host-repo-after
-```
-
-Und für das Secret gibt es zwei Wege:
-
-* **`COPILOT_GITHUB_TOKEN`** als Secret im Host-Repo hinterlegen. Dafür braucht ihr ein
-  Repo, das schon existiert — also `--host-repo owner/repo` statt eines temporären.
-* **`permissions: copilot-requests: write`** im Workflow setzen. Das ist der Hinweis,
-  den euch der Compiler bei **jedem** Lauf gibt. Er funktioniert nur, wenn eure
-  Organisation zentrale Copilot-Abrechnung hat — in einem persönlichen Account nie.
-
-> Das temporäre Repo ist übrigens nicht „nichts": `trial` legt ein **privates Repository
-> in eurem GitHub-Konto** an. Es ist also nicht „nichts passiert", sondern „nichts
-> passiert *dort, wo es weh tut*". Schaut nach, ob es weg ist:
-> ```bash
-> gh repo list --limit 100 | grep gh-aw-trial
-> ```
-
-</details>
-
 ### Die Lockfile-Regel, an der alle einmal scheitern
 
-GitHub Actions führt **ausschließlich YAML** in `.github/workflows` aus. Eure
-`.md`-Datei ist für Actions unsichtbar. Nur die generierte `.lock.yml` läuft wirklich.
-
-**Beide Dateien werden committet.** Aus 3 KB Markdown werden rund 100 KB Lockfile — mit
-SHA-gepinnten Actions, Digest-gepinnten Containern, Firewall-Proxy, MCP-Gateway und dem
-kompletten Agent-Prompt. `gh aw init` markiert sie als `linguist-generated`, damit sie
-im Diff eingeklappt ist, aber **versioniert** bleibt.
+GitHub Actions führt **ausschließlich YAML** aus. Eure `.md`-Datei ist für Actions
+unsichtbar — nur die generierte `.lock.yml` läuft wirklich. Aus 3 KB Markdown werden
+rund 100 KB Lockfile, mit SHA-gepinnten Actions, Firewall-Proxy und dem kompletten
+Agent-Prompt.
 
 > **Merksatz:** Nach jeder Änderung an der `.md` sofort `gh aw compile` und **beide**
 > Dateien committen. Der Compiler erkennt Drift über Hashes und meldet
 > „Lock file is outdated".
 
-### Wenn ihr scharf schalten wollt
+<details>
+<summary>Wenn ihr den Workflow wirklich scharf schalten wollt</summary>
+
+Nicht Teil der Übung — und **nicht in diesem Repo.** Macht das in einem eigenen,
+sonst liegt eure Lösung für alle sichtbar herum. Der Ablauf:
 
 ```bash
 git add .github/workflows/doku-drift.md .github/workflows/doku-drift.lock.yml .gitattributes
@@ -1066,9 +1026,21 @@ git commit -m "feat(build): ergaenze Doku-Drift-Workflow"
 git push
 gh aw status
 gh aw run doku-drift
-gh aw logs doku-drift
-gh aw audit RUN-ID --parse
 ```
+
+`gh aw run` gibt euch die Run-ID und die URL aus. **Erst danach**, mit der echten ID
+aus dieser Ausgabe:
+
+```bash
+gh aw audit 32714750029 --parse     # eure ID einsetzen
+```
+
+> **Zwei Dinge, die wir dabei gelernt haben.** Erstens: Mit `engine: copilot` braucht
+> der Lauf ein `COPILOT_GITHUB_TOKEN` im Repo — sonst bricht er in der ersten Sekunde
+> ab. Zweitens: Bei einem Fehlschlag legt der Workflow ein Issue an, das den Fehlschlag
+> meldet. Das ist gewollt und trotzdem überraschend, wenn man es nicht erwartet.
+
+</details>
 
 ### Das Sicherheitsmodell — warum das Ganze überhaupt vertretbar ist
 
