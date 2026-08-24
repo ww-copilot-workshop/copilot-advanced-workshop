@@ -618,17 +618,23 @@ im Browser** — das reicht für alles, was hier zu tun ist.
 
 **20 Minuten**
 
-Jetzt vom Einzeltask zum wiederkehrenden. In `modul-4/workflow-vorlagen/` liegen drei
-Workflows — **mit Lücken**. Eure Aufgabe: eine Vorlage vollständig machen, bis sie
-kompiliert.
+Vom Einzeltask zum wiederkehrenden. In `modul-4/workflow-vorlagen/` liegen drei
+Workflows **mit Lücken**. Sucht euch **einen** aus und macht ihn vollständig.
 
-| Vorlage | Auslöser | Safe Output |
-|---|---|---|
-| `doku-drift.md` | nächtlich | `create-issue` |
-| `testluecken-report.md` | wöchentlich | `create-pull-request` (Draft) |
-| `ci-triage.md` | bei Pull Requests | `add-comment` |
+| Vorlage | Läuft wann | Was sie ausgibt | TODOs |
+|---|---|---|---|
+| `doku-drift.md` | nächtlich | ein Issue | 7 |
+| `testluecken-report.md` | wöchentlich | ein Draft-PR | 10 |
+| `ci-triage.md` | bei Pull Requests | ein Kommentar | 7 |
 
-**Vorbereitung**
+**Nehmt `doku-drift.md`, wenn ihr euch nicht entscheiden könnt.** Sie ist die
+kürzeste. `ci-triage.md` ist die anspruchsvollste — sie wird durch **fremde** Pull
+Requests ausgelöst, und genau daran hängt ihre schwierigste Aufgabe.
+
+**Jedes TODO in der Vorlage erklärt, was fehlt.** Ihr müsst nichts erraten; ihr müsst
+lesen und verstehen.
+
+### Vorbereitung
 
 ```bash
 gh extension install github/gh-aw     # falls noch nicht da
@@ -636,73 +642,221 @@ gh aw --version
 gh aw init --engine copilot           # einmal pro Repo
 ```
 
-> ⚠️ **`gh aw init` legt eine eigene `.github/workflows/copilot-setup-steps.yml` an** —
-> für seine eigenen Zwecke. Wenn ihr die Vorlage aus `modul-4/` dorthin kopiert,
-> überschreibt ihr sie (oder sie eure), und niemand warnt euch.
->
-> Reihenfolge, die funktioniert: **erst `gh aw init`, dann hineinschauen.** Wenn dort
-> schon eine Datei liegt, führt eure Setup-Steps-Aufgabe an einem anderen Dateinamen
-> durch und vergleicht am Ende. Im echten Repo müsst ihr die beiden von Hand
-> zusammenführen — auch das ist eine realistische Erfahrung.
+> ⚠️ **`gh aw init` legt eine eigene `.github/workflows/copilot-setup-steps.yml` an.**
+> Wenn ihr die Vorlage aus `modul-4/` dorthin kopiert, überschreibt eine die andere,
+> und niemand warnt euch. **Erst `gh aw init`, dann hineinschauen.** Liegt dort schon
+> etwas, arbeitet unter einem anderen Dateinamen und vergleicht am Ende. Im echten
+> Repo müsst ihr die beiden von Hand zusammenführen — auch das ist realistisch.
 
-**Ablauf**
+### Der Ablauf
 
 ```bash
 cp modul-4/workflow-vorlagen/doku-drift.md .github/workflows/
-# Lücken füllen ...
+# TODOs füllen ...
 gh aw compile
 ```
 
-`gh aw compile` ist euer schnellstes Feedback im ganzen Workshop: es sagt euch **exakt**,
-was falsch ist, oft mit „Did you mean". Nutzt das als Übungsschleife, nicht als
-Abschlussprüfung.
+`gh aw compile` ist euer schnellstes Feedback im ganzen Workshop. Er sagt oft wörtlich,
+was er stattdessen erwartet hat, inklusive „Did you mean". **Benutzt ihn als
+Übungsschleife, nicht als Abschlussprüfung** — und ohne `--verbose`, sonst zählt er
+interne Meldungen als Warnungen mit.
 
-**Das Sicherheitsmodell — der Grund, warum das Ganze überhaupt vertretbar ist**
+### Fertig, wenn …
 
-Der Agent läuft **read-only**. Er darf nichts schreiben. Was er ausgeben will, geht als
-**Safe Output** an einen **separaten Job**, der ausschließlich die deklarierte Aktion
-ausführt — Issue anlegen, kommentieren, Draft-PR öffnen. Dazwischen wird die Ausgabe
-saniert.
+1. `gh aw compile` meldet **null Warnungen**
+2. die Prüfliste im Tipps-Block unten ist abgehakt
+3. ihr könnt erklären, **warum** euer Workflow genau diese Permissions hat
 
-Konsequenz: Selbst wenn ein manipuliertes Tool-Ergebnis den Agenten übernimmt, kann er
-nur das tun, was in `safe-outputs:` steht. **Er schlägt vor, ein anderer Job führt aus.**
+> ⚠️ **Punkt 2 ist nicht optional, und hier ist der Grund.** Wir haben es nachgemessen:
+> **`ci-triage.md` kompiliert mit allen offenen TODOs fehlerfrei und ohne
+> Warnung.** Wer nur auf „0 warnings" schaut, hält eine unfertige Datei für fertig.
+>
+> Das ist kein Fehler der Vorlage, sondern die Lektion des ganzen Labs:
+> **Ein Compiler prüft Form, kein Verständnis.** Genau deshalb gibt es Reviews — bei
+> Workflows wie bei Code.
 
-Der `strict`-Modus (Standard: an) blockiert deshalb Write-Permissions hart. Wer
-`contents: write` schreibt, bekommt einen Compile-Fehler — kein Warnhinweis, einen Fehler.
+<details>
+<summary><b>Tipps</b> — Prüfliste und Hinweise zu eurer Vorlage</summary>
 
-**Die Lockfile-Regel, an der alle einmal scheitern**
+**Für alle drei:** Der Compiler meldet **pro Lauf nur einen Fehler je Datei**. Nach dem
+Fix kann sofort der nächste auftauchen — das ist normal, nicht Pech. Und die `i →`-Zeile
+unter einer Fehlermeldung ist gelegentlich unpassend; **verlasst euch auf die erste
+Zeile**.
 
-```bash
-gh aw compile     # erzeugt .github/workflows/<name>.lock.yml
-```
+Der `info:`-Hinweis zu `permissions.copilot-requests: write` erscheint bei **jedem**
+Compile mit `engine: copilot`. Das ist eine Info, keine Warnung. Maßgeblich ist die
+Zeile *„Compiled 1 workflow: 1 succeeded, 0 warnings"*.
 
-GitHub Actions führt **ausschließlich YAML** in `.github/workflows` aus. Eure `.md`-Datei
-ist für Actions unsichtbar. Nur die generierte `.lock.yml` läuft wirklich.
+---
 
-**Beide Dateien werden committet.** Aus 3 KB Markdown werden rund 100 KB Lockfile mit
-SHA-gepinnten Actions, Digest-gepinnten Containern, Firewall-Proxy, MCP-Gateway und dem
-kompletten Agent-Prompt. `gh aw init` markiert die Datei als `linguist-generated`, damit
-sie im Diff eingeklappt ist — aber **versioniert** bleibt.
+**`doku-drift.md`**
 
-> **Merksatz:** Nach jeder Änderung an der `.md` sofort `gh aw compile` und beide
-> Dateien committen. Der Compiler erkennt Drift über Hashes und meldet
-> „Lock file is outdated".
+- [ ] Zeitplan gesetzt? (Zwei Schreibweisen möglich — probiert beide und lest, was der
+      Compiler jeweils sagt.)
+- [ ] Manueller Auslöser da? Sonst könnt ihr nichts testen.
+- [ ] Permissions für **alle** Toolsets? `toolsets: [default]` enthält mehr, als der
+      Name vermuten lässt — der Compiler nennt euch die fehlenden beim Namen.
+- [ ] `bash` mit einer **echten Liste**, nicht `true`.
+- [ ] Anzahl der Issues je Lauf begrenzt?
 
-**Ausprobieren, ohne etwas anzurichten**
+**`testluecken-report.md`**
+
+- [ ] `java` im Netz-Allowlist? Ohne den Eintrag löst Maven keine Abhängigkeiten auf.
+- [ ] Das Werkzeug zum **Schreiben** von Dateien da? Es gibt dafür genau eines.
+- [ ] Maven in der bash-Allowlist — nicht alles freigeben.
+- [ ] Der PR ein **Entwurf**? Ein Wort genügt.
+- [ ] `if-no-changes` gesetzt? Sonst gibt es jede Woche einen leeren PR.
+
+**`ci-triage.md`**
+
+- [ ] `roles:` steht **unter `on:`**, nicht auf oberster Ebene. Das ist TODO(1),
+      das die Vorlage „besonders aufmerksam lesen" nennt — und der Grund steht dort.
+- [ ] `actions: read` **und** das Toolset `actions`. Beides, nicht eines.
+- [ ] `target` beim Kommentar gesetzt?
+- [ ] Höchstens ein Kommentar je Lauf.
+
+---
+
+**Und die zwei, die sauber durchkompilieren und trotzdem falsch sind:**
+
+`bash: [":*"]` ist keine Einschränkung, sondern die Erlaubnis für alles — dasselbe wie
+`bash: true`, nur unauffälliger geschrieben. Und `add-comment` **ohne** `target`
+kommentiert nicht unbedingt dorthin, wo ihr denkt.
+
+Beides meldet der Compiler nicht. Beides findet ein Review.
+
+</details>
+
+<details>
+<summary><b>Die fünf Fallstricke</b> — die euch garantiert treffen</summary>
+
+1. **Fehlende Permission für ein Toolset.** `toolsets: [default]` enthält
+   `pull_requests` — also braucht ihr `pull-requests: read`. Häufigster Warnfall.
+2. **Write-Permission im Strict-Modus.** `strict` ist standardmäßig an und blockiert
+   Write-Permissions **hart** — kein Warnhinweis, ein Fehler. Nicht umgehen, umdenken:
+   Der Agent schlägt vor, ein separater Job führt aus.
+3. **Tippfehler in `safe-outputs`.** `create-issues` gibt es nicht, `create-issue` schon.
+4. **`roles:` an der falschen Stelle.** Es gehört unter `on:`. Der Compiler sagt es
+   euch wörtlich.
+5. **`timeout-minutes` mit Bindestrich**, nicht mit Unterstrich.
+
+Und einer, der keiner ist: der Hinweis zur token-basierten Inference bei
+`engine: copilot`. Erscheint immer, ist kein Fehler.
+
+</details>
+
+<details>
+<summary>🚨 <b>Musterlösung</b> — nur im Notfall aufklappen</summary>
+
+**Erst wenn ihr feststeckt.** Der Compiler ist die bessere Hilfe: Er sagt euch bei fast
+jedem Fehler, was er erwartet hätte. Wer hier zuerst hineinschaut, überspringt genau die
+Schleife, um die es geht.
+
+Dies ist `doku-drift.md`, vollständig. Für die anderen beiden gilt dasselbe Muster.
+
+````markdown
+---
+description: Nächtlicher Abgleich zwischen Java-Quellen und Dokumentation
+
+on:
+  schedule: daily
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  issues: read
+  pull-requests: read
+
+engine: copilot
+network: defaults
+
+timeout-minutes: 20
+
+strict: true
+
+tools:
+  github:
+    toolsets: [default]
+  bash: ["find", "ls", "cat", "grep", "git log", "git diff", "git show"]
+
+safe-outputs:
+  create-issue:
+    title-prefix: "[doku-drift] "
+    labels: [documentation, automated]
+    max: 1
+  missing-tool:
+---
+
+# Nächtlicher Doku-Drift-Check
+
+Vergleiche die Java-Quellen dieses Repositories mit der Dokumentation.
+
+Als Dokumentation gelten: `README.md`, `AGENTS.md`, alles unter `docs/`,
+sowie `modul-5/SPEC.md`.
+
+## Vorgehen
+
+1. Ermittle die in den letzten sieben Tagen geänderten Java-Dateien.
+2. Prüfe für jede geänderte öffentliche Klasse und Methode:
+   - Gibt es neue öffentliche API ohne Dokumentation?
+   - Verweist die Dokumentation auf Klassen oder Methoden, die es nicht mehr gibt?
+   - Weicht `modul-5/SPEC.md` von dem ab, was der Code laut Signatur anbietet?
+     (Nur der **API-Kontrakt** in Abschnitt 3 der SPEC ist gemeint — nicht das
+     fachliche Verhalten. Für Verhalten ist der Testlücken-Workflow zuständig.)
+3. Findest du Drift, erstelle **genau ein** Issue mit einer Tabelle:
+
+   | Datei | Betroffenes Symbol | Art des Drifts | Vorgeschlagene Korrektur |
+
+4. Findest du keinen Drift, erstelle **kein** Issue. Ein leeres Issue ist schlimmer
+   als kein Issue.
+
+## Grenzen
+
+Ändere keine Dateien. Das hier ist ein Report.
+````
+
+**Worauf es in dieser Lösung ankommt** — die drei Stellen, die man beim Abschreiben
+übersieht:
+
+* **`bash:` ist eine Liste konkreter Kommandos**, keine Freigabe. `find`, `ls`, `cat`,
+  `grep`, `git log`, `git diff`, `git show` — mehr braucht ein Doku-Abgleich nicht.
+* **`max: 1`** macht aus „genau ein Issue" im Prompt eine Zusage der Infrastruktur.
+  Ein Prompt ist eine Bitte, `max` ist eine Regel. (Dieselbe Unterscheidung wie bei
+  `--deny-tool` in C1.)
+* **`missing-tool:`** lässt den Agenten melden, wenn ihm etwas fehlt, statt sich
+  etwas auszudenken. Ohne diesen Eintrag improvisiert er still.
+
+</details>
+
+### Ausprobieren, ohne etwas anzurichten
 
 ```bash
 gh aw trial ./.github/workflows/doku-drift.md --clone-repo <org>/<repo> --delete-host-repo-after
 ```
 
-Trial-Modus läuft gegen ein **simuliertes** Repository: keine echten Issues, keine
-echten PRs im Zielrepo. **Das ist der richtige Weg für den ersten Lauf.**
+Trial läuft gegen ein **simuliertes** Repository: keine echten Issues, keine echten PRs
+im Zielrepo. **Das ist der richtige Weg für den ersten Lauf.**
 
-> Präzisierung, damit niemand überrascht wird: `gh aw trial` legt dafür ein
-> **temporäres privates Repository in eurem GitHub-Konto** an. Es ist also nicht
-> „nichts passiert", sondern „nichts passiert *dort, wo es weh tut*".
-> `--delete-host-repo-after` räumt es wieder weg — benutzt das Flag.
+> Damit niemand überrascht wird: `gh aw trial` legt dafür ein **temporäres privates
+> Repository in eurem GitHub-Konto** an. Es ist also nicht „nichts passiert", sondern
+> „nichts passiert *dort, wo es weh tut*". `--delete-host-repo-after` räumt es weg —
+> benutzt das Flag.
 
-**Wenn ihr scharf schalten wollt**
+### Die Lockfile-Regel, an der alle einmal scheitern
+
+GitHub Actions führt **ausschließlich YAML** in `.github/workflows` aus. Eure
+`.md`-Datei ist für Actions unsichtbar. Nur die generierte `.lock.yml` läuft wirklich.
+
+**Beide Dateien werden committet.** Aus 3 KB Markdown werden rund 100 KB Lockfile — mit
+SHA-gepinnten Actions, Digest-gepinnten Containern, Firewall-Proxy, MCP-Gateway und dem
+kompletten Agent-Prompt. `gh aw init` markiert sie als `linguist-generated`, damit sie
+im Diff eingeklappt ist, aber **versioniert** bleibt.
+
+> **Merksatz:** Nach jeder Änderung an der `.md` sofort `gh aw compile` und **beide**
+> Dateien committen. Der Compiler erkennt Drift über Hashes und meldet
+> „Lock file is outdated".
+
+### Wenn ihr scharf schalten wollt
 
 ```bash
 git add .github/workflows/doku-drift.md .github/workflows/doku-drift.lock.yml .gitattributes
@@ -714,59 +868,15 @@ gh aw logs doku-drift
 gh aw audit <run-id> --parse
 ```
 
-**Fertig, wenn** `gh aw compile` **null Warnungen** meldet, ihr erklären könnt, warum
-euer Workflow genau die Permissions hat, die er hat — **und die Prüfliste unten
-abgehakt ist.**
+### Das Sicherheitsmodell — warum das Ganze überhaupt vertretbar ist
 
-> ⚠️ **Der Compiler allein reicht als Abnahme nicht.** Wir haben es nachgemessen:
-> **`ci-triage.md` kompiliert mit ALLEN sechs offenen TODOs fehlerfrei und ohne
-> Warnung.** Wer nur auf „0 warnings" schaut, hält eine unfertige Datei für fertig.
->
-> Das ist kein Fehler der Vorlage, sondern die Lektion: **Ein Compiler prüft Form,
-> kein Verständnis.** Genau deshalb gibt es Reviews.
->
-> Prüfliste je Vorlage — geht sie zu zweit durch:
->
-> * `doku-drift.md` — Zeitplan gesetzt? Manueller Auslöser da? Permissions für **alle**
->   Toolsets? `bash` mit **echter Liste** (nicht `true`)? `max` beim Issue?
-> * `testluecken-report.md` — `java` im Netz-Allowlist? `edit`-Tool da? Draft-PR?
->   `if-no-changes` gesetzt?
-> * `ci-triage.md` — `roles` **unter `on:`**? `actions: read` **und** Toolset `actions`?
->   `target` beim Kommentar? `max: 1`?
->
-> Und die zwei, die sauber durchkompilieren und trotzdem falsch sind:
-> **`bash: [":*"]`** und **`add-comment` ohne `target`**.
+Der Agent läuft **read-only**. Er darf nichts schreiben. Was er ausgeben will, geht als
+**Safe Output** an einen **separaten Job**, der ausschließlich die deklarierte Aktion
+ausführt. Dazwischen wird die Ausgabe saniert.
 
-> Eine Zeile bleibt trotzdem stehen: der `info:`-Hinweis zu
-> `permissions.copilot-requests: write`. Das ist eine **Info**, keine Warnung, und
-> erscheint bei jedem Compile mit `engine: copilot`. Die Zusammenfassung am Ende zählt
-> ihn nicht mit — achtet auf die Zeile „Compiled 1 workflow: 1 succeeded, 0 warnings".
->
-> Und: **benutzt `gh aw compile` ohne `--verbose`.** Mit `--verbose` zählt der Compiler
-> je Datei eine interne Meldung („Schema validation available but skipped") als Warnung
-> mit. Ihr hättet die Aufgabe gelöst und würdet es nicht merken.
-
-**Der Compiler ist kein Policy-Werkzeug.** Er prüft Syntax und Permissions-Konsistenz,
-nicht eure Absicht. „Kompiliert sauber" heißt nicht „ist in Ordnung". Genau dafür gibt
-es das Review — bei Workflows genauso wie bei Code.
-
-> Noch zwei Beobachtungen aus dem Testlauf, damit ihr nicht rätselt:
-> Der Compiler meldet **pro Datei nur einen Fehler je Lauf** — nach dem Fix kann also
-> sofort der nächste auftauchen. Und die `i →`-Zeile unter einer Fehlermeldung ist
-> gelegentlich unpassend; **verlasst euch auf die erste Zeile**, nicht auf den Nachsatz.
-
-### Die fünf Fallstricke, die euch garantiert treffen
-
-1. **Fehlende Permission für ein Toolset.** `toolsets: [default]` enthält
-   `pull_requests` — also braucht ihr `pull-requests: read`. Häufigster Warnfall.
-2. **Write-Permission im Strict-Modus.** Siehe oben. Nicht umgehen — umdenken.
-3. **Tippfehler in `safe-outputs`.** `create-issues` gibt es nicht, `create-issue` schon.
-4. **`roles:` an der falschen Stelle.** Es gehört unter `on:`, nicht auf die oberste
-   Ebene. Der Compiler sagt es euch wörtlich.
-5. **`timeout-minutes` mit Bindestrich**, nicht mit Unterstrich.
-
-Und einer, der keiner ist: bei `engine: copilot` erscheint bei **jedem** Compile ein
-Hinweis zur token-basierten Inference. Das ist kein Fehler.
+Konsequenz: Selbst wenn ein manipuliertes Werkzeug-Ergebnis den Agenten übernimmt, kann
+er nur das tun, was in `safe-outputs:` steht. **Er schlägt vor, ein anderer Job führt
+aus.**
 
 ---
 

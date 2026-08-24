@@ -6,7 +6,7 @@
 #       schreibt EINEN Kommentar mit Ursache, Belegstelle und Fix-Vorschlag.
 #
 # Diese Vorlage hat die interessanteste Sicherheitsfrage der drei: sie wird durch
-# fremde Pull Requests ausgelöst. Lest TODO(3) besonders aufmerksam.
+# fremde Pull Requests ausgelöst. Lest TODO(1) besonders aufmerksam.
 # =============================================================================
 
 description: Analysiert fehlgeschlagene Maven-Builds auf Pull Requests
@@ -14,7 +14,7 @@ description: Analysiert fehlgeschlagene Maven-Builds auf Pull Requests
 on:
   pull_request:
     types: [opened, synchronize, reopened]
-  # TODO(3): Dieser Workflow wird durch Pull Requests ausgelöst — auch durch solche
+  # TODO(1): Dieser Workflow wird durch Pull Requests ausgelöst — auch durch solche
   #  aus Forks, von Leuten, die ihr nicht kennt. Begrenzt die Auslösung auf Nutzer
   #  mit Schreibrechten.
   #
@@ -25,7 +25,7 @@ on:
 
 permissions:
   contents: read
-  # TODO(4): Um Workflow-Runs und Job-Logs zu lesen, fehlt eine Permission.
+  # TODO(2): Um Workflow-Runs und Job-Logs zu lesen, fehlt eine Permission.
   #  Sie hat denselben Namen wie das Toolset, das ihr unten ergänzen müsst.
   pull-requests: read
   issues: read
@@ -37,16 +37,16 @@ strict: true
 
 tools:
   github:
-    # TODO(5): Das Standard-Toolset reicht nicht — der Agent muss an Workflow-Runs
+    # TODO(3): Das Standard-Toolset reicht nicht — der Agent muss an Workflow-Runs
     #  und Job-Logs herankommen. Ergänzt das passende zweite Toolset.
     toolsets: [default]
-  # TODO(6): Kommandos zum Sichten von Logs. Sparsam bleiben.
+  # TODO(4): Kommandos zum Sichten von Logs. Sparsam bleiben.
 
 safe-outputs:
   add-comment:
-    # TODO(7): Der Kommentar soll an den auslösenden Pull Request. Der Key heißt
+    # TODO(5): Der Kommentar soll an den auslösenden Pull Request. Der Key heißt
     #  `target`, der passende Wert beschreibt genau das.
-    # TODO(8): Höchstens ein Kommentar je Lauf. Niemand will fünf Bot-Kommentare
+    # TODO(6): Höchstens ein Kommentar je Lauf. Niemand will fünf Bot-Kommentare
     #  unter seinem PR.
   missing-tool:
 ---
@@ -79,7 +79,7 @@ Analysiere den fehlgeschlagenen Maven-Build dieses Pull Requests.
 Ändere keine Dateien. Pushe nichts. Schließe nichts.
 
 <!--
-  TODO(9) — die Denkaufgabe, und die wichtigste des Moduls:
+  TODO(7) — die Denkaufgabe, und die wichtigste des Moduls:
 
   Dieser Workflow liest Logs. Logs enthalten Text, den andere Leute geschrieben haben.
   Ein Test könnte heißen:
