@@ -249,10 +249,19 @@ mvn -q -pl modul-2/mcp-server -am package
 Erzeugt `modul-2/mcp-server/target/werkstatt-mcp.jar`. Schneller Test ohne CLI:
 
 ```bash
+# Git Bash, macOS, Linux
 printf '%s\n' \
   '{"jsonrpc":"2.0","id":1,"method":"initialize","params":{"protocolVersion":"2025-06-18","capabilities":{},"clientInfo":{"name":"t","version":"1"}}}' \
   '{"jsonrpc":"2.0","id":2,"method":"tools/list","params":{}}' \
   | java -jar modul-2/mcp-server/target/werkstatt-mcp.jar
+```
+
+```powershell
+# PowerShell
+@(
+  '{"jsonrpc":"2.0","id":1,"method":"initialize","params":{"protocolVersion":"2025-06-18","capabilities":{},"clientInfo":{"name":"t","version":"1"}}}'
+  '{"jsonrpc":"2.0","id":2,"method":"tools/list","params":{}}'
+) | java -jar modul-2/mcp-server/target/werkstatt-mcp.jar
 ```
 
 Ihr müsst zwei JSON-Zeilen zurückbekommen. Danach einbinden:

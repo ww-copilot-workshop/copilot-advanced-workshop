@@ -262,14 +262,35 @@ wie vor dem Umbau. Ein Refactoring, das die Befundlage ändert, war keins. Beleg
 statt es zu behaupten:
 
 ```bash
+# Git Bash, macOS, Linux
 mvn -pl modul-5 -am test 2>&1 | grep -E 'Tests run:.*-- in |^\[ERROR\]   [A-Z][A-Za-z0-9_]*\.' | sed -E 's/Time elapsed: [0-9.,]+ s//' | sort > /tmp/vorher.txt
+```
+
+```powershell
+# PowerShell
+mvn -pl modul-5 -am test 2>&1 | Out-String -Stream |
+  Select-String -CaseSensitive -Pattern 'Tests run:.*-- in |^\[ERROR\]   [A-Z][A-Za-z0-9_]*\.' |
+  ForEach-Object { $_.Line -replace 'Time elapsed: [0-9.,]+ s', '' } |
+  Sort-Object | Set-Content "$env:TEMP\vorher.txt"
 ```
 
 Dann umbauen. Danach dasselbe noch einmal, nach `nachher.txt`:
 
 ```bash
+# Git Bash, macOS, Linux
 mvn -pl modul-5 -am test 2>&1 | grep -E 'Tests run:.*-- in |^\[ERROR\]   [A-Z][A-Za-z0-9_]*\.' | sed -E 's/Time elapsed: [0-9.,]+ s//' | sort > /tmp/nachher.txt
 diff /tmp/vorher.txt /tmp/nachher.txt && echo "IDENTISCH"
+```
+
+```powershell
+# PowerShell
+mvn -pl modul-5 -am test 2>&1 | Out-String -Stream |
+  Select-String -CaseSensitive -Pattern 'Tests run:.*-- in |^\[ERROR\]   [A-Z][A-Za-z0-9_]*\.' |
+  ForEach-Object { $_.Line -replace 'Time elapsed: [0-9.,]+ s', '' } |
+  Sort-Object | Set-Content "$env:TEMP\nachher.txt"
+
+$abweichung = Compare-Object (Get-Content "$env:TEMP\vorher.txt") (Get-Content "$env:TEMP\nachher.txt")
+if (-not $abweichung) { "IDENTISCH" } else { $abweichung }
 ```
 
 > **Warum das `sed` dazwischen steht:** Maven schreibt in jede Zeile die Laufzeit des

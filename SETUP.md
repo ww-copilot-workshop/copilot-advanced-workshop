@@ -9,20 +9,24 @@ Bitte **vor** dem Workshop erledigen. Rechnet mit 20 Minuten, wenn nichts instal
 
 ## 0. Welche Shell? — bitte einmal lesen
 
-Die Übungen benutzen durchgängig Bash-Syntax: einfache Anführungszeichen, `*`-Muster
-in Freigabe-Flags, ein `.sh`-Skript in Übung A2. In der PowerShell werden
-Anführungszeichen und Klammern anders behandelt — das kostet euch in A2
-(„Freigaben-Golf") Zeit an einer Stelle, an der es um etwas ganz anderes geht.
+Die Übungen sind in **Bash-Syntax** geschrieben. Überall dort, wo ein Befehl in der
+PowerShell anders aussehen muss — andere Anführungszeichen, Backtick statt Backslash
+als Zeilenfortsetzung, `Select-String` statt `grep` — **steht die PowerShell-Fassung
+direkt unter der Bash-Fassung**. Beide sind geprüft. Nehmt die, die zu eurer Shell
+passt; ihr müsst nichts umschreiben.
 
-**Arbeitet deshalb in Git Bash oder in WSL**, nicht in PowerShell oder CMD.
+**Empfohlen bleibt trotzdem Git Bash**, aus einem einzigen konkreten Grund:
+
+> **Übung A2 („Freigaben-Golf") startet ein `.sh`-Skript.** Dafür braucht es eine
+> echte Bash. In der PowerShell ruft ihr die von Git für Windows mitgelieferte
+> ausdrücklich auf; der Befehl dafür steht in Modul 1 direkt dabei. Das ist die
+> einzige Stelle am ganzen Tag, an der die PowerShell allein nicht reicht.
 
 - **Git Bash** kommt mit Git für Windows mit (siehe Abschnitt 2) — das genügt für
   den ganzen Tag und ist der kürzeste Weg.
 - **WSL** ist die Alternative, wenn ihr sie ohnehin nutzt. Dann installiert ihr alle
   Werkzeuge *innerhalb* der WSL-Distribution, nicht unter Windows.
-
-Nur die Installationsbefehle in Abschnitt 2 laufen in PowerShell. Alles danach in
-Git Bash.
+- **PowerShell** funktioniert für alles außer A2. CMD wird nicht unterstützt.
 
 ---
 
@@ -211,8 +215,16 @@ und am Morgen gemeinsam geprüft:
 Wenn davon etwas fehlt, läuft Modul 4 im **Trial-Modus**:
 
 ```bash
+# Git Bash, macOS, Linux
 gh aw trial ./.github/workflows/doku-drift.md \
   --clone-repo ORG/REPO \
+  --delete-host-repo-after
+```
+
+```powershell
+# PowerShell
+gh aw trial ./.github/workflows/doku-drift.md `
+  --clone-repo ORG/REPO `
   --delete-host-repo-after
 ```
 
@@ -246,7 +258,7 @@ erfahrungsgemäß etwas.
 | Symptom | Ursache | Abhilfe |
 |---|---|---|
 | `copilot: command not found` | PATH nicht aktualisiert | Neues Terminal öffnen. Bei npm-Installation: `npm prefix -g` ausgeben, `/bin` anhängen, zum PATH hinzufügen (`npm bin -g` gibt es seit npm 9 nicht mehr) |
-| Anführungszeichen-Fehler in A2 | PowerShell statt Git Bash | In Git Bash arbeiten, siehe Abschnitt 0 |
+| `bash: command not found` in A2 | PowerShell hat keine Bash | Git Bash nutzen, oder den `bash.exe`-Aufruf aus Modul 1 |
 | `./A2-branch-chaos.sh` startet nicht | PowerShell statt Git Bash | dasselbe |
 | `/sandbox` → „Unknown command" | Experimental-Modus aus | `copilot --experimental` oder `/settings experimental on` |
 | Sandbox lässt sich nicht aktivieren | Windows ohne Insider-Build | Erwartet, kein Fehler. A3.2 im Team mit macOS/Linux ansehen (Abschnitt 1) |

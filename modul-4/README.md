@@ -99,10 +99,17 @@ Findet heraus, welche.
    schreiben. **Setzt euren echten Dateinamen ein**, und startet aus der Repo-Wurzel:
 
    ```bash
+   # Git Bash, macOS, Linux
    copilot -p "Lies modul-4/aufgabenkarten/C1-vw-XXXX-repariert.md. Du darfst zur \
    Beurteilung in den Quellcode schauen. Nenne mir danach NUR die Fragen, die du zu \
    DIESEM Auftrag stellen müsstest. Keine Anmerkungen, keine Randnotizen, keine \
    Beobachtungen zu anderen Stellen im Code - ausschließlich die Fragen. Ändere nichts." \
+     --deny-tool 'write'
+   ```
+
+   ```powershell
+   # PowerShell
+   copilot -p 'Lies modul-4/aufgabenkarten/C1-vw-XXXX-repariert.md. Du darfst zur Beurteilung in den Quellcode schauen. Nenne mir danach NUR die Fragen, die du zu DIESEM Auftrag stellen müsstest. Keine Anmerkungen, keine Randnotizen, keine Beobachtungen zu anderen Stellen im Code - ausschließlich die Fragen. Ändere nichts.' `
      --deny-tool 'write'
    ```
 
@@ -156,10 +163,17 @@ Findet heraus, welche.
 * **Maschinell, gegen das Original:**
 
   ```bash
+  # Git Bash, macOS, Linux
   copilot -p "Lies modul-4/aufgabenkarten/C1-vw-XXXX.md. Beurteile AUSSCHLIESSLICH \
   diese Karte als Auftrag. Schau NICHT in den Quellcode und nicht in andere Dateien. \
   Nenne mir NUR die Fragen, die du stellen müsstest, bevor du sie umsetzen könntest. \
   Ändere nichts." \
+    --deny-tool 'write'
+  ```
+
+  ```powershell
+  # PowerShell
+  copilot -p 'Lies modul-4/aufgabenkarten/C1-vw-XXXX.md. Beurteile AUSSCHLIESSLICH diese Karte als Auftrag. Schau NICHT in den Quellcode und nicht in andere Dateien. Nenne mir NUR die Fragen, die du stellen müsstest, bevor du sie umsetzen könntest. Ändere nichts.' `
     --deny-tool 'write'
   ```
 

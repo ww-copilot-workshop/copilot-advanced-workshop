@@ -147,9 +147,19 @@ Das ist die Übung, über die ihr abends noch redet.
 **Vorbereitung** (einmal pro Team, dauert 5 Sekunden):
 
 ```bash
+# Git Bash, macOS, Linux
 git status --porcelain     # muss LEER sein, sonst startet das Skript nicht
 bash modul-1/uebungen/A2-branch-chaos.sh
 ```
+
+> **In der PowerShell** gibt es kein `bash`. Ruft die von Git für Windows
+> mitgelieferte auf — das ist die **einzige** Stelle am ganzen Tag, an der die
+> PowerShell allein nicht reicht:
+>
+> ```powershell
+> git status --porcelain
+> & "$env:ProgramFiles\Git\bin\bash.exe" modul-1/uebungen/A2-branch-chaos.sh
+> ```
 
 > ⚠️ **Wenn ihr A1 gemacht habt, ist euer Arbeitsbaum schmutzig** und das Skript
 > verweigert den Start („Arbeitsverzeichnis ist nicht sauber"). Das ist Absicht — es soll
@@ -257,8 +267,16 @@ und — auf OS-Ebene — die Sandbox.
 **A3.1 URL-Grenzen — das macht ihr selbst (funktioniert auf jedem System)**
 
 ```bash
+# Git Bash, macOS, Linux
 copilot -p "Rufe https://api.github.com/zen ab und gib die Antwort aus." \
   --allow-tool 'shell(curl)' \
+  --deny-url 'https://api.github.com'
+```
+
+```powershell
+# PowerShell
+copilot -p 'Rufe https://api.github.com/zen ab und gib die Antwort aus.' `
+  --allow-tool 'shell(curl)' `
   --deny-url 'https://api.github.com'
 ```
 
