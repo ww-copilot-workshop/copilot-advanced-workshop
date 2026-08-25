@@ -20,11 +20,18 @@ Workflow läuft?
 
 ## 2. Trigger
 
-Was löst ihn aus? Genau eines ankreuzen, dazu den konkreten Wert.
+Was löst ihn aus? Genau eines ankreuzen. **Alle drei stehen unter `on:`**, nicht
+daneben — das ist der häufigste Compiler-Fehler.
 
-- [ ] **Zeitplan** → `schedule:` ______________________ (täglich / wöchentlich / Cron)
-- [ ] **Ereignis** → `on:` ______________________ (`pull_request`, `issues`, …)
-- [ ] **Auf Zuruf** → `slash_command:` `/______________________`
+- [ ] **Zeitplan** → `schedule:` ______________________ (`daily`, `weekly on monday`, Cron)
+- [ ] **Ereignis** → `pull_request:` / `issues:` / ______________________
+- [ ] **Auf Zuruf** → `slash_command: { name: ______________________ }`
+
+> **Ereignis angekreuzt? Dann fehlt eine Zeile.** Auf Pull Requests reagiert der
+> Workflow auch bei **fremden** PRs aus Forks. `roles:` entscheidet, für wen er
+> überhaupt anläuft — und gehört ebenfalls unter `on:`.
+>
+> `roles: [` ______________________ `]`   ← z. B. `admin, maintainer, write`
 
 > Wenn ihr „bei jedem Push" ankreuzt: rechnet einmal durch, wie oft das am Tag ist,
 > und multipliziert es mit euren Credits. Die meisten Entwürfe werden hier billiger.
@@ -50,11 +57,15 @@ Least Privilege. Was streicht ihr wieder, nachdem ihr es aufgeschrieben habt?
 | `github` (Toolsets) | ☐ | ______________________ |
 | `bash` | ☐ | Allowlist: ______________________ |
 | `edit` | ☐ | nur diese Datei: ______________________ |
-| `web-fetch` / `web-search` | ☐ | ______________________ |
+| `web-fetch` | ☐ | Domains: ______________________ |
 | eigener MCP-Server | ☐ | ______________________ |
 
 > Erinnerung aus Lab C: `bash: true` ist **nicht** die brave Variante — das ist dasselbe
 > wie „alles". Nur eine echte Liste schränkt ein.
+
+> **`web-search` steht bewusst nicht in der Tabelle.** Mit `engine: copilot` gibt es
+> das Werkzeug nicht; der Compiler warnt, und euer Ziel „0 Warnungen" ist dahin.
+> Braucht ihr wirklich Suche, ist das eine Frage an die Engine — nicht an die Tabelle.
 
 ---
 
@@ -69,6 +80,9 @@ Was darf am Ende **wirklich** passieren? Genau eines.
 
 **Permissions:** der Agent selbst bleibt `read`. Was schreibt, ist der Safe-Output-Job.
 
+> Nehmt zusätzlich **`missing-tool:`** dazu. Dann meldet der Agent, wenn ihm etwas
+> fehlt, statt sich still etwas auszudenken. Kostet eine Zeile.
+
 ---
 
 ## 6. Budget
@@ -79,9 +93,14 @@ Was darf am Ende **wirklich** passieren? Genau eines.
 | Geschätzte Credits pro Lauf | ______ |
 | **Summe pro Monat** | ______ |
 | Actions-Minuten pro Monat | ______ |
+| `timeout-minutes` je Lauf | ______ |
 | Wer schaut monatlich drauf? | ______________________ |
 
-`gh aw forecast` sagt euch die Credits voraus, bevor ihr scharf schaltet.
+Der Deckel ist die eigentliche Bremse: Ein Agent, der sich festbeißt, kostet so lange,
+bis ihn jemand stoppt. `timeout-minutes` stoppt ihn ohne jemanden.
+
+`gh aw forecast` projiziert die Credits — aber aus **vergangenen** Läufen. Vor dem
+allerersten Lauf gibt es nichts zu sampeln; da bleibt es bei eurer Schätzung.
 
 ---
 
