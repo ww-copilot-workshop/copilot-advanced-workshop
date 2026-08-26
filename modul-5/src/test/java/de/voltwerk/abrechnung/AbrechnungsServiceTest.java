@@ -3,6 +3,7 @@ package de.voltwerk.abrechnung;
 import org.junit.jupiter.api.Test;
 
 import java.math.BigDecimal;
+import java.time.Instant;
 import java.util.Date;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -33,5 +34,45 @@ class AbrechnungsServiceTest {
         // tatsächliche Verhalten angepasst, weil der Test sonst rot war und
         // niemand Zeit hatte, das zu klären (VW-1533).
         assertEquals(0, betrag.compareTo(new BigDecimal("2.03")));
+    }
+
+    @Test
+    void nachttarifImNachtfensterWirdMitNachtpreisBerechnet() {
+        Ladesitzung sitzung = neueSitzungFuerNachttarif(Date.from(Instant.parse("2026-01-15T23:00:00Z")));
+
+        BigDecimal betrag = new AbrechnungsService().berechne(sitzung);
+
+        assertEquals(0, betrag.compareTo(new BigDecimal("3.90")));
+    }
+
+    @Test
+    void nachttarifAusserhalbNachtfensterFaelltAufBasispreisZurueck() {
+        Ladesitzung sitzung = neueSitzungFuerNachttarif(Date.from(Instant.parse("2026-01-15T12:00:00Z")));
+
+        BigDecimal betrag = new AbrechnungsService().berechne(sitzung);
+
+        assertEquals(0, betrag.compareTo(new BigDecimal("5.90")));
+    }
+
+    @Test
+    void nachttarifMitNullStartzeitFaelltAufBasispreisZurueck() {
+        Ladesitzung sitzung = neueSitzungFuerNachttarif(null);
+
+        BigDecimal betrag = new AbrechnungsService().berechne(sitzung);
+
+        assertEquals(0, betrag.compareTo(new BigDecimal("5.90")));
+    }
+
+    private Ladesitzung neueSitzungFuerNachttarif(Date ladeStart) {
+        return new Ladesitzung(
+                "S-0002",
+                8,
+                new Kunde("K-200", "Nachttest"),
+                Tarif.NACHT,
+                ladeStart,
+                new Date(1_700_003_600_000L),
+                new Date(1_700_003_600_000L),
+                10.0,
+                50.0);
     }
 }
